@@ -1,0 +1,9 @@
+autopep8
+flake8
+ipykernel
+numpy
+pandas
+pandas
+pip-tools
+pre-commit
+virtualenv
