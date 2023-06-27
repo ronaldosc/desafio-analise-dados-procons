@@ -1,16 +1,3 @@
-# Dados possíveis
-
-- [ ] Contagem total de atendimentos por ano, trimestre, mês, região, UF, tipo de atendimento, assunto, grupo de assunto, problema, sexo do consumidor, faixa etária e CEP do consumidor.
-- [ ] Número de atendimentos por região, UF e tipo de atendimento ao longo dos anos.
-- [ ] Principais assuntos e grupos de assunto mais recorrentes nos atendimentos.
-- [ ] Distribuição de problemas por grupo de problema e sexo do consumidor.
-- [ ] Análise da faixa etária dos consumidores que mais solicitaram atendimento.
-- [ ] Identificação dos CEPs com maior número de atendimentos.
-- [ ] Tendência de atendimentos ao longo dos trimestres ou meses.
-- [ ] Tempo médio de atendimento por tipo de atendimento, assunto ou grupo de problema.
-- [ ] Agrupamento de atendimentos por ano e análise de suas tendências.
-- [ ] Cruzamento de informações, como identificar o tipo de atendimento mais comum para cada grupo de assunto.
-
 ## Análise temporal:
 
 - [ ] Identificar tendências ao longo dos anos, trimestres ou meses nos atendimentos.
