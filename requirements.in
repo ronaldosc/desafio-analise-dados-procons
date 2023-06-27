@@ -1,4 +1,5 @@
 autopep8
+beautifulsoup4
 flake8
 ipykernel
 numpy
@@ -6,4 +7,6 @@ pandas
 pandas
 pip-tools
 pre-commit
+requests
+tqdm
 virtualenv
