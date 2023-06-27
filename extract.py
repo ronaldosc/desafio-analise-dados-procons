@@ -26,34 +26,10 @@ class Extract:
             file_url = urllib.parse.urljoin(self.url, element['href'])
             file_name = os.path.join(self.folder_name, element['href'].split('/')[-1])
 
-            if (
-                file_url.endswith('.csv')
-                and any(str(year) in file_name for year in self.years)
-                and all(term.lower() not in file_name.lower() for term in self.ignore)
-            ):
+            if self._is_valid_file(file_url, file_name):
                 total_files += 1
 
         return total_files
-
-    def download_file(self, file_url, file_name):
-        if os.path.exists(file_name):
-            print(f'Skipping {file_name} (already downloaded)')
-            return
-
-        response = requests.get(file_url, stream=True)
-
-        # Get the file size in bytes
-        file_size = int(response.headers.get('Content-Length', 0))
-
-        # Create the file and download the content
-        with open(file_name, 'wb') as file:
-            with tqdm(
-                total=file_size, unit='B', unit_scale=True, desc='Progress', leave=False
-            ) as pbar:
-                for chunk in response.iter_content(chunk_size=1024):
-                    if chunk:
-                        file.write(chunk)
-                        pbar.update(len(chunk))
 
     def download_files(self):
         # Count the total number of files to download
@@ -70,24 +46,43 @@ class Extract:
             file_url = urllib.parse.urljoin(self.url, element['href'])
             file_name = os.path.join(self.folder_name, element['href'].split('/')[-1])
 
-            if (
-                file_url.endswith('.csv')
-                and any(str(year) in file_name for year in self.years)
-                and all(term.lower() not in file_name.lower() for term in self.ignore)
-            ):
-                self.download_file(file_url, file_name)
+            if self._is_valid_file(file_url, file_name):
+                self._download_file(file_url, file_name)
                 progress_bar.update(1)
 
         progress_bar.close()
 
-        print(
-            'All .csv files from 2019 to 2023 (excluding specified files) downloaded.'
-        )
+        print('All .csv files downloaded.')
+
+    def _download_file(self, file_url, file_name):
+        if os.path.exists(file_name):
+            print(f'Skipping {file_name} (already downloaded)')
+            return
+
+        response = requests.get(file_url, stream=True)
+
+        # Get the file size in bytes
+        file_size = int(response.headers.get('Content-Length', 0))
+
+        # Create the file and download the content
+        with open(file_name, 'wb') as file:
+            with tqdm(total=file_size, unit='B', unit_scale=True, desc='Progress', leave=False) as pbar:
+                for chunk in response.iter_content(chunk_size=1024):
+                    if chunk:
+                        file.write(chunk)
+                        pbar.update(len(chunk))
 
     def _get_resource_elements(self):
         response = requests.get(self.url)
         soup = BeautifulSoup(response.content, 'html.parser')
         return soup.find_all(class_='resource-url-analytics')
+
+    def _is_valid_file(self, file_url, file_name):
+        return (
+            file_url.endswith('.csv')
+            and any(str(year) in file_name for year in self.years)
+            and all(term.lower() not in file_name.lower() for term in self.ignore)
+        )
 
 
 def extract():
