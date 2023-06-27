@@ -7,79 +7,97 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-url = 'https://dados.mj.gov.br/dataset/atendimentos-de-consumidores-nos-procons-sindec'
 
-# Send a GET request to the URL
-response = requests.get(url)
+class Extract:
+    def __init__(self, url, folder_name, years, ignore=None):
+        if ignore is None:
+            ignore = []
+        self.url = url
+        self.folder_name = folder_name
+        self.years = years
+        self.ignore = ignore
+        self.total_files = 0
 
-# Create a BeautifulSoup object to parse the HTML content
-soup = BeautifulSoup(response.content, 'html.parser')
+    def count_files_to_download(self):
+        elements = self._get_resource_elements()
+        # Count the total number of files to download
+        total_files = 0
+        for element in elements:
+            file_url = urllib.parse.urljoin(self.url, element['href'])
+            file_name = os.path.join(self.folder_name, element['href'].split('/')[-1])
 
-# Find all elements with class="resource-url-analytics"
-elements = soup.find_all(class_='resource-url-analytics')
+            if (
+                file_url.endswith('.csv')
+                and any(str(year) in file_name for year in self.years)
+                and all(term.lower() not in file_name.lower() for term in self.ignore)
+            ):
+                total_files += 1
 
-# Create a directory to store the downloaded files
-folder_name = 'csv_files'
-os.makedirs(folder_name, exist_ok=True)
+        return total_files
 
-# List of years to filter the files
-years = [2019, 2020, 2021, 2022, 2023]
-
-# Files to ignore (exclude)
-ignore = ['fornecedor']
-
-# Total number of files to download
-total_files = 0
-
-# Count the total number of files to download
-for element in elements:
-    file_url = urllib.parse.urljoin(url, element['href'])
-    file_name = os.path.join(folder_name, element['href'].split('/')[-1])
-
-    if (
-        file_url.endswith('.csv')
-        and any(str(year) in file_name for year in years)
-        and all(term.lower() not in file_name.lower() for term in ignore)
-    ):
-        total_files += 1
-
-# Iterate through the elements and download the .csv files from 2019 to 2023
-progress_bar = tqdm(total=total_files, unit='file')
-
-for element in elements:
-    file_url = urllib.parse.urljoin(url, element['href'])
-    file_name = os.path.join(folder_name, element['href'].split('/')[-1])
-
-    if (
-        file_url.endswith('.csv')
-        and any(str(year) in file_name for year in years)
-        and all(term.lower() not in file_name.lower() for term in ignore)
-    ):
+    def download_file(self, file_url, file_name):
         if os.path.exists(file_name):
             print(f'Skipping {file_name} (already downloaded)')
-        else:
-            progress_bar.set_description(f'Downloading {file_name}')
-            response = requests.get(file_url, stream=True)
+            return
 
-            # Get the file size in bytes
-            file_size = int(response.headers.get('Content-Length', 0))
+        response = requests.get(file_url, stream=True)
 
-            # Create the file and download the content
-            with open(file_name, 'wb') as file:
-                with tqdm(
-                    total=file_size,
-                    unit='B',
-                    unit_scale=True,
-                    desc='Progress',
-                    leave=False,
-                ) as pbar:
-                    for chunk in response.iter_content(chunk_size=1024):
-                        if chunk:
-                            file.write(chunk)
-                            pbar.update(len(chunk))
+        # Get the file size in bytes
+        file_size = int(response.headers.get('Content-Length', 0))
 
-        progress_bar.update(1)
+        # Create the file and download the content
+        with open(file_name, 'wb') as file:
+            with tqdm(
+                total=file_size, unit='B', unit_scale=True, desc='Progress', leave=False
+            ) as pbar:
+                for chunk in response.iter_content(chunk_size=1024):
+                    if chunk:
+                        file.write(chunk)
+                        pbar.update(len(chunk))
 
-progress_bar.close()
+    def download_files(self):
+        # Count the total number of files to download
+        self.total_files = self.count_files_to_download()
 
-print('All .csv files downloaded.')
+        # Create a directory to store the downloaded files
+        os.makedirs(self.folder_name, exist_ok=True)
+
+        elements = self._get_resource_elements()
+        # Iterate through the elements and download the .csv files from 2019 to 2023
+        progress_bar = tqdm(total=self.total_files, unit='file')
+
+        for element in elements:
+            file_url = urllib.parse.urljoin(self.url, element['href'])
+            file_name = os.path.join(self.folder_name, element['href'].split('/')[-1])
+
+            if (
+                file_url.endswith('.csv')
+                and any(str(year) in file_name for year in self.years)
+                and all(term.lower() not in file_name.lower() for term in self.ignore)
+            ):
+                self.download_file(file_url, file_name)
+                progress_bar.update(1)
+
+        progress_bar.close()
+
+        print(
+            'All .csv files from 2019 to 2023 (excluding specified files) downloaded.'
+        )
+
+    def _get_resource_elements(self):
+        response = requests.get(self.url)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        return soup.find_all(class_='resource-url-analytics')
+
+
+def extract():
+    url = 'https://dados.mj.gov.br/dataset/atendimentos-de-consumidores-nos-procons-sindec'
+    folder_name = 'csv_files'
+    years = [2019, 2020, 2021, 2022, 2023]
+    ignore_list = ['fornecedor']
+
+    extractor = Extract(url, folder_name, years, ignore_list)
+    extractor.download_files()
+
+
+extract()
