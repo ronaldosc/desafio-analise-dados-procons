@@ -78,11 +78,9 @@ class Extract:
         return soup.find_all(class_='resource-url-analytics')
 
     def _is_valid_file(self, file_url, file_name):
-        return (
-            file_url.endswith('.csv')
-            and any(str(year) in file_name for year in self.years)
-            and all(term.lower() not in file_name.lower() for term in self.ignore)
-        )
+        return (file_url.endswith('.csv')
+                and any(str(year) in file_name for year in self.years)
+                and all(term.lower() not in file_name.lower() for term in self.ignore))
 
 
 def extract():
