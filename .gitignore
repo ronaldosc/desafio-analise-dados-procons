@@ -70,3 +70,4 @@ ui_*.py
 # Excel files
 *.xls
 *.xlsx
+*.csv
