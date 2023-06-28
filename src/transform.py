@@ -15,10 +15,20 @@ class CSVReader:
     def read_csv(self, year_index: int, file_number: int) -> pd.DataFrame:
         csv_file = f'{self.folder_name}/{self.years[year_index]}_{file_number}.csv'
         print(csv_file)
-        try:
-            df = pd.read_csv(csv_file, on_bad_lines='skip', encoding='utf-8', sep=';')
-        except UnicodeDecodeError:
-            df = pd.read_csv(csv_file, on_bad_lines='skip', encoding='cp1252', sep='\t')
+        encodings = ['utf-8', 'cp1252']
+        separators = [';', '\t']
+
+        for encoding in encodings:
+            for separator in separators:
+                try:
+                    df = pd.read_csv(csv_file, on_bad_lines='skip', encoding=encoding, sep=separator)
+                    break  # Break out of the inner loop if successful
+                except UnicodeDecodeError as e:
+                    print(f'An error occurred: {e}')
+            else:
+                continue  # Continue to the next encoding if the inner loop wasn't broken
+            break  # Break out of the outer loop if successful
+
         df = df.fillna(0)
         for column, (data_type, slice_size) in self.value_dictionary.items():
             if slice_size is not None:
