@@ -3,12 +3,27 @@ from __future__ import annotations
 import pandas as pd
 
 
-folder_name = 'csv_files'
-years = [2019, 2020, 2021, 2022, 2023]
-csv_file = f'{folder_name}/{years[0]}_1.csv'
-print(csv_file)
+class CSVReader:
+    def __init__(self, folder_name: str, years: list[int], value_dictionary: dict[str, tuple[str, int]]):
+        self.folder_name = folder_name
+        self.years = years
+        self.value_dictionary = value_dictionary
 
-# Define the data types and slice sizes for each column
+    def read_csv(self, year_index: int, file_number: int) -> pd.DataFrame:
+        csv_file = f'{self.folder_name}/{self.years[year_index]}_{file_number}.csv'
+        print(csv_file)
+        try:
+            df = pd.read_csv(csv_file, on_bad_lines='skip', encoding='utf-8', sep=';')
+        except UnicodeDecodeError:
+            df = pd.read_csv(csv_file, on_bad_lines='skip', encoding='cp1252', sep='\t')
+        df = df.fillna(0)
+        for column, (data_type, slice_size) in self.value_dictionary.items():
+            if slice_size is not None:
+                df[column] = df[column].astype(str).str.slice(0, slice_size)
+            df[column] = df[column].astype(data_type)
+        return df
+
+
 value_dictionary = {
     'AnoAtendimento': ('int64', None),
     'TrimestreAtendimento': ('int64', None),
@@ -30,23 +45,6 @@ value_dictionary = {
     'CEPConsumidor': ('object', 8)
 }
 
-try:
-    # Try reading the CSV file with utf-8 encoding
-    df = pd.read_csv(csv_file, on_bad_lines='skip', encoding='utf-8', sep=';')
-except UnicodeDecodeError:
-    # If reading with utf-8 encoding fails, try reading with cp1252 encoding
-    df = pd.read_csv(csv_file, on_bad_lines='skip', encoding='cp1252', sep='\t')
-
-
-# Replace non-finite values in all columns with a default value
-df = df.fillna(0)  # Replace with a default value of 0
-
-for column, (data_type, slice_size) in value_dictionary.items():
-    if slice_size is not None:
-        df[column] = df[column].astype(str).str.slice(0, slice_size)
-
-    df[column] = df[column].astype(data_type)
-
-
-# Display the DataFrame
+csv_reader = CSVReader('csv_files', [2019, 2020, 2021, 2022, 2023], value_dictionary)
+df = csv_reader.read_csv(0, 1)
 print(df.head())
