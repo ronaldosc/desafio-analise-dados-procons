@@ -30,9 +30,13 @@ value_dictionary = {
     'CEPConsumidor': ('object', 8)
 }
 
+try:
+    # Try reading the CSV file with utf-8 encoding
+    df = pd.read_csv(csv_file, on_bad_lines='skip', encoding='utf-8', sep=';')
+except UnicodeDecodeError:
+    # If reading with utf-8 encoding fails, try reading with cp1252 encoding
+    df = pd.read_csv(csv_file, on_bad_lines='skip', encoding='cp1252', sep='\t')
 
-# Read the CSV file into a pandas DataFrame
-df = pd.read_csv(csv_file, on_bad_lines='skip', encoding='utf-8', sep=';')
 
 # Replace non-finite values in all columns with a default value
 df = df.fillna(0)  # Replace with a default value of 0
