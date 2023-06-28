@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import urllib.parse
+from collections import defaultdict
 
 import requests
 from bs4 import BeautifulSoup
@@ -42,12 +43,20 @@ class Extract:
         # Iterate through the elements and download the .csv files from 2019 to 2023
         progress_bar = tqdm(total=self.total_files, unit='file')
 
+        year_count = defaultdict(int)
+
         for element in elements:
             file_url = urllib.parse.urljoin(self.url, element['href'])
             file_name = os.path.join(self.folder_name, element['href'].split('/')[-1])
 
             if self._is_valid_file(file_url, file_name):
-                self._download_file(file_url, file_name)
+                year = next(year for year in self.years if str(year) in file_name)
+                year_count[year] += 1
+                count = year_count[year]
+                new_file_name = f'{year}_{count}.csv'
+                new_file_path = os.path.join(self.folder_name, new_file_name)
+
+                self._download_file(file_url, new_file_path)
                 progress_bar.update(1)
 
         progress_bar.close()
