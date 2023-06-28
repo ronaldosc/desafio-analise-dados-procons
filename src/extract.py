@@ -24,8 +24,8 @@ class Extract:
         # Count the total number of files to download
         total_files = 0
         for element in elements:
-            file_url = urllib.parse.urljoin(self.url, element['href'])
-            file_name = os.path.join(self.folder_name, element['href'].split('/')[-1])
+            file_url = self._get_file_url(element)
+            file_name = self._get_file_name(element)
 
             if self._is_valid_file(file_url, file_name):
                 total_files += 1
@@ -46,8 +46,8 @@ class Extract:
         year_count = defaultdict(int)
 
         for element in elements:
-            file_url = urllib.parse.urljoin(self.url, element['href'])
-            file_name = os.path.join(self.folder_name, element['href'].split('/')[-1])
+            file_url = self._get_file_url(element)
+            file_name = self._get_file_name(element)
 
             if self._is_valid_file(file_url, file_name):
                 year = next(year for year in self.years if str(year) in file_name)
@@ -90,6 +90,12 @@ class Extract:
         return (file_url.endswith('.csv')
                 and any(str(year) in file_name for year in self.years)
                 and all(term.lower() not in file_name.lower() for term in self.ignore))
+
+    def _get_file_url(self, element):
+        return urllib.parse.urljoin(self.url, element['href'])
+
+    def _get_file_name(self, element):
+        return os.path.join(self.folder_name, element['href'].split('/')[-1])
 
 
 def extract():
