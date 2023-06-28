@@ -6,6 +6,10 @@ from collections import defaultdict
 
 import requests
 from bs4 import BeautifulSoup
+from config import dataset_folder_name
+from config import dataset_ignore_list
+from config import dataset_source_url
+from config import dataset_years
 from tqdm import tqdm
 
 
@@ -95,12 +99,7 @@ class Extract:
 
 
 def extract():
-    url = 'https://dados.mj.gov.br/dataset/atendimentos-de-consumidores-nos-procons-sindec'
-    folder_name = 'csv_files'
-    years = [2019, 2020, 2021, 2022, 2023]
-    ignore_list = ['fornecedor']
-
-    extractor = Extract(url, folder_name, years, ignore_list)
+    extractor = Extract(dataset_source_url, dataset_folder_name, dataset_years, dataset_ignore_list)
     extractor.download_files()
 
 

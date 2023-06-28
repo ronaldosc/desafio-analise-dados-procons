@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import pandas as pd
+from config import dataset_folder_name
+from config import dataset_value_dictionary
+from config import dataset_years
 
 
 class CSVReader:
@@ -24,27 +27,6 @@ class CSVReader:
         return df
 
 
-value_dictionary = {
-    'AnoAtendimento': ('int64', None),
-    'TrimestreAtendimento': ('int64', None),
-    'MesAtendimento': ('int64', None),
-    'DataAtendimento': ('datetime64[ns]', None),
-    'CodigoRegiao': ('object', 2),
-    'Regiao': ('object', 15),
-    'UF': ('object', 2),
-    'CodigoTipoAtendimento': ('int64', None),
-    'DescricaoTipoAtendimento': ('object', 50),
-    'CodigoAssunto': ('int64', None),
-    'DescricaoAssunto': ('object', 160),
-    'GrupoAssunto': ('object', 160),
-    'CodigoProblema': ('int64', None),
-    'DescricaoProblema': ('object', 160),
-    'GrupoProblema': ('object', 160),
-    'SexoConsumidor': ('object', 1),
-    'FaixaEtariaConsumidor': ('object', 20),
-    'CEPConsumidor': ('object', 8)
-}
-
-csv_reader = CSVReader('csv_files', [2019, 2020, 2021, 2022, 2023], value_dictionary)
+csv_reader = CSVReader(dataset_folder_name, dataset_years, dataset_value_dictionary)
 df = csv_reader.read_csv(0, 1)
 print(df.head())
