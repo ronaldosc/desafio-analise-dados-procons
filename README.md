@@ -2,7 +2,14 @@
 
 ## Objetivos
 
-  >Realizar os processos de ‘coleta’, ‘limpeza’, ‘análise’ e ‘visualização’ de dados da **Administração Pública Brasileira**.
+  >Realizar os processos de:  
+  >
+  >- ‘coleta’,
+  >- ‘limpeza’,
+  >- ‘análise’ e,
+  >- ‘visualização’  
+  >
+  > de dados provenientes da **Administração Pública Brasileira**.
 
 ### [Fonte dos Dados para este Projeto](https://dados.mj.gov.br/dataset/atendimentos-de-consumidores-nos-procons-sindec)
 
