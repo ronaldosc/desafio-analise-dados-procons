@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 
 class Extract:
-    def __init__(self, url, folder_name, years, ignore=None):
+    def __init__(self, url: str, folder_name: str, years: list[int], ignore: list[str] | None = None):
         if ignore is None:
             ignore = []
         self.url = url
@@ -23,11 +23,11 @@ class Extract:
         self.ignore = ignore
         self.total_files = 0
 
-    def count_files_to_download(self):
+    def count_files_to_download(self) -> int:
         elements = self._get_resource_elements()
         return sum(bool(self._is_valid_file(element)) for element in elements)
 
-    def download_files(self):
+    def download_files(self) -> None:
         # Count the total number of files to download
         self.total_files = self.count_files_to_download()
 
@@ -60,7 +60,7 @@ class Extract:
 
         print('All .csv files downloaded.')
 
-    def _download_file(self, file_url, file_path):
+    def _download_file(self, file_url: str, file_path: str) -> None:
         if os.path.exists(file_path):
             print(f'Skipping {file_path} (already downloaded)')
             return
@@ -78,12 +78,12 @@ class Extract:
                         file.write(chunk)
                         pbar.update(len(chunk))
 
-    def _get_resource_elements(self):
+    def _get_resource_elements(self) -> list[BeautifulSoup]:
         response = requests.get(self.url)
         soup = BeautifulSoup(response.content, 'html.parser')
         return soup.find_all(class_='resource-url-analytics')
 
-    def _is_valid_file(self, element):
+    def _is_valid_file(self, element: BeautifulSoup) -> bool:
         file_url = self._get_file_url(element)
         file_name = self._get_file_name(element)
 
@@ -91,14 +91,14 @@ class Extract:
                 and any(str(year) in file_name for year in self.years)
                 and all(term.lower() not in file_name.lower() for term in self.ignore))
 
-    def _get_file_url(self, element):
+    def _get_file_url(self, element: BeautifulSoup) -> str:
         return urllib.parse.urljoin(self.url, element['href'])
 
-    def _get_file_name(self, element):
+    def _get_file_name(self, element: BeautifulSoup) -> str:
         return os.path.join(self.folder_name, element['href'].split('/')[-1])
 
 
-def extract():
+def extract() -> None:
     extractor = Extract(dataset_source_url, dataset_folder_name, dataset_years, dataset_ignore_list)
     extractor.download_files()
 
