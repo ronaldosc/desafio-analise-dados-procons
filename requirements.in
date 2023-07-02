@@ -1,12 +1,12 @@
 autopep8
 beautifulsoup4
 flake8
-ipykernel
 numpy
-pandas
+openpyxl
 pandas
 pip-tools
 pre-commit
 requests
 tqdm
+typing
 virtualenv
