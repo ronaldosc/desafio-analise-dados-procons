@@ -6,11 +6,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
 # Unit test / coverage reports
 htmlcov/
 .tox/
@@ -25,49 +20,15 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
 # Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# UI generated files
-ui_*.py
+.[v]env
+*env/
+!.venv/*.md
 
 # Images
 *.png
-*.jpg
-*.jpeg
+*.jp[e]g
 
-# Face recognition data
-*.dat
-
-# Excel files
-*.xls
-*.xlsx
+# Tabular files
+*.xls[x]
 *.csv
