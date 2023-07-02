@@ -32,7 +32,23 @@ class CSVReader:
                 return df
         raise ValueError('Failed to read CSV file with all encodings and separators')
 
+    def clean_cep_column(self, df: pd.DataFrame, column_name: str) -> pd.DataFrame:
+        df[column_name] = df[column_name].str.replace('0.0', '')
+        df[column_name] = df[column_name].str.replace('.', '0')
+        df[column_name] = df[column_name].str[:-3] + '-' + df[column_name].str[-3:]
+        return df
 
-csv_reader = CSVReader(dataset_folder_name, dataset_years, dataset_value_dictionary)
-df = csv_reader.read_csv(1, 4)
-print(df.head())
+    def sort_data_columns(self, df: pd.DataFrame) -> pd.DataFrame:
+        return df.apply(lambda x: x.sort_values().reset_index(drop=True))
+
+
+def transform() -> None:
+    csv_reader = CSVReader(dataset_folder_name, dataset_years, dataset_value_dictionary)
+    df = csv_reader.read_csv(1, 4)
+    df = csv_reader.clean_cep_column(df, 'CEPConsumidor')
+    df = csv_reader.sort_data_columns(df)
+
+    print(df.head())
+
+
+transform()
