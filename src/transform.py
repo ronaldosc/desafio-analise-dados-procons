@@ -1,6 +1,11 @@
 from __future__ import annotations
 
+import contextlib
+import itertools
+
 import pandas as pd
+from config import csv_encodings
+from config import csv_separators
 from config import dataset_folder_name
 from config import dataset_value_dictionary
 from config import dataset_years
@@ -15,28 +20,35 @@ class CSVReader:
     def read_csv(self, year_index: int, file_number: int) -> pd.DataFrame:
         csv_file = f'{self.folder_name}/{self.years[year_index]}_{file_number}.csv'
         print(csv_file)
-        encodings = ['utf-8', 'cp1252']
-        separators = [';', '\t']
 
-        for encoding in encodings:
-            for separator in separators:
-                try:
-                    df = pd.read_csv(csv_file, on_bad_lines='skip', encoding=encoding, sep=separator)
-                    break  # Break out of the inner loop if successful
-                except UnicodeDecodeError as e:
-                    print(f'An error occurred: {e}')
-            else:
-                continue  # Continue to the next encoding if the inner loop wasn't broken
-            break  # Break out of the outer loop if successful
+        for encoding, separator in itertools.product(csv_encodings, csv_separators):
+            with contextlib.suppress(UnicodeDecodeError, KeyError, pd.errors.ParserError):
+                df = pd.read_csv(csv_file, encoding=encoding, sep=separator)
+                df = df.fillna(0)
+                for column, (data_type, slice_size) in self.value_dictionary.items():
+                    if slice_size is not None:
+                        df[column] = df[column].astype(str).str.slice(0, slice_size)
+                    df[column] = df[column].astype(data_type)
+                return df
+        raise ValueError('Failed to read CSV file with all encodings and separators')
 
-        df = df.fillna(0)
-        for column, (data_type, slice_size) in self.value_dictionary.items():
-            if slice_size is not None:
-                df[column] = df[column].astype(str).str.slice(0, slice_size)
-            df[column] = df[column].astype(data_type)
+    def clean_cep_column(self, df: pd.DataFrame, column_name: str = 'CEPConsumidor') -> pd.DataFrame:
+        df[column_name] = df[column_name].str.replace('0.0', '')
+        df[column_name] = df[column_name].str.replace('.', '0')
+        df[column_name] = df[column_name].str[:-3] + '-' + df[column_name].str[-3:]
         return df
 
+    def sort_data_columns(self, df: pd.DataFrame) -> pd.DataFrame:
+        return df.apply(lambda x: x.sort_values().reset_index(drop=True))
 
-csv_reader = CSVReader(dataset_folder_name, dataset_years, dataset_value_dictionary)
-df = csv_reader.read_csv(0, 1)
-print(df.head())
+
+def transform() -> None:
+    csv_reader = CSVReader(dataset_folder_name, dataset_years, dataset_value_dictionary)
+    df = csv_reader.read_csv(1, 4)
+    df = csv_reader.clean_cep_column(df)
+    df = csv_reader.sort_data_columns(df)
+
+    print(df.head())
+
+
+transform()
