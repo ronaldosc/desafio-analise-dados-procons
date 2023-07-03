@@ -25,7 +25,7 @@ class Extract:
 
     def count_files_to_download(self) -> int:
         elements = self._get_resource_elements()
-        return sum(bool(self._is_valid_file(element)) for element in elements)
+        return sum(self._is_valid_file(element) for element in elements)
 
     def download_files(self) -> None:
         # Count the total number of files to download
@@ -47,7 +47,7 @@ class Extract:
             file_url = self._get_file_url(element)
             file_name = self._get_file_name(element)
 
-            year = next(year for year in self.years if str(year) in file_name)
+            year = self._get_year_from_filename(file_name)
             year_count[year] += 1
             count = year_count[year]
             new_file_name = f'{year}_{count}.csv'
@@ -66,11 +66,8 @@ class Extract:
             return
 
         response = requests.get(file_url, stream=True)
-
-        # Get the file size in bytes
         file_size = int(response.headers.get('Content-Length', 0))
 
-        # Create the file and download the content
         with open(file_path, 'wb') as file:
             with tqdm(total=file_size, unit='B', unit_scale=True, desc='Progress', leave=False) as pbar:
                 for chunk in response.iter_content(chunk_size=1024):
@@ -87,15 +84,23 @@ class Extract:
         file_url = self._get_file_url(element)
         file_name = self._get_file_name(element)
 
-        return (file_url.endswith('.csv')
-                and any(str(year) in file_name for year in self.years)
-                and all(term.lower() not in file_name.lower() for term in self.ignore))
+        return (
+            file_url.endswith('.csv')
+            and any(str(year) in file_name for year in self.years)
+            and all(term.lower() not in file_name.lower() for term in self.ignore)
+        )
 
     def _get_file_url(self, element: BeautifulSoup) -> str:
         return urllib.parse.urljoin(self.url, element['href'])
 
     def _get_file_name(self, element: BeautifulSoup) -> str:
         return os.path.join(self.folder_name, element['href'].split('/')[-1])
+
+    def _get_year_from_filename(self, filename: str) -> int:
+        for year in self.years:
+            if str(year) in filename:
+                return year
+        raise ValueError(f'No valid year found in filename: {filename}')
 
 
 def extract() -> None:
