@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-csv_encodings = ['utf-8', 'cp1252']
-csv_separators = [';', '\t']
-
 dataset_source_url = 'https://dados.mj.gov.br/dataset/atendimentos-de-consumidores-nos-procons-sindec'
 dataset_folder_name = 'csv_files'
 dataset_ignore_list = ['fornecedor']
