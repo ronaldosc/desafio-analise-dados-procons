@@ -24,6 +24,7 @@ coverage.xml
 .[v]env
 *env/
 !.venv/*.md
+.env
 
 # Images
 *.png

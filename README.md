@@ -30,8 +30,6 @@
   - curated (dado limpo).
   - analytics (dado analisado).
 
-- Na montagem do data warehouse com as informações das tabelas deve-se utilizar algoritmos que demonstram a habilidade em estrutura de dados e complexidade de algoritmos;
-
 - Visualização dos dados analisados;
 
 - Uso da análise _estatística básica_ nos dados.
