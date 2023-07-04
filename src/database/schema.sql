@@ -1,32 +1,5 @@
-CREATE TABLE "ChamadosProcon" (
-	"id" serial PRIMARY KEY,
-	"dataAtendimento" DATE NOT NULL,
-	"codigoRegiao" integer NOT NULL,
-	"nomeRegiao" varchar NOT NULL,
-	"ufRegiao" varchar NOT NULL,
-	"codigoTipoAtendimento" integer NOT NULL,
-	"descricaoAtendimento" varchar NOT NULL,
-	"codigoAssunto" integer NOT NULL,
-	"descricaoAssunto" varchar NOT NULL,
-	"codigoProblema" varchar NOT NULL,
-	"descricaoProblema" varchar NOT NULL,
-	"sexo" varchar(1) NOT NULL,
-	"faixaEtaria" varchar NOT NULL,
-	"cep" varchar NOT NULL
-) WITH (
-  OIDS=FALSE
-);
-
-
-CREATE TABLE "Periodo" (
-	"dataAtendimento" DATE NOT NULL
-) WITH (
-  OIDS=FALSE
-);
-
-
 CREATE TABLE "Regiao" (
-	"codigoRegiao" integer NOT NULL,
+	"idRegiao" serial PRIMARY KEY,
 	"nomeRegiao" varchar NOT NULL,
 	"ufRegiao" varchar NOT NULL
 ) WITH (
@@ -36,7 +9,7 @@ CREATE TABLE "Regiao" (
 
 
 CREATE TABLE "TipoAtendimento" (
-	"codigoTipoAtendimento" integer NOT NULL,
+	"idTipoAtendimento" serial PRIMARY KEY,
 	"descricaoAtendimento" varchar NOT NULL
 ) WITH (
   OIDS=FALSE
@@ -45,7 +18,7 @@ CREATE TABLE "TipoAtendimento" (
 
 
 CREATE TABLE "Assunto" (
-	"codigoAssunto" integer NOT NULL,
+	"idAssunto" serial PRIMARY KEY,
 	"descricaoAssunto" varchar NOT NULL
 ) WITH (
   OIDS=FALSE
@@ -54,7 +27,7 @@ CREATE TABLE "Assunto" (
 
 
 CREATE TABLE "Problema" (
-	"codigoProblema" varchar NOT NULL,
+	"idProblema" serial PRIMARY KEY,
 	"descricaoProblema" varchar NOT NULL
 ) WITH (
   OIDS=FALSE
@@ -62,10 +35,23 @@ CREATE TABLE "Problema" (
 
 
 
-CREATE TABLE "Consumidor" (
+CREATE TABLE "Atendimento" (
+	"idAtendimento" serial PRIMARY KEY,
 	"sexo" varchar(1) NOT NULL,
 	"faixaEtaria" varchar NOT NULL,
-	"cep" varchar NOT NULL
+	"cep" varchar NOT NULL,
+	"dataAtendimento" DATE NOT NULL,
+	"idRegiao" serial NOT NULL,
+	"idTipoAtendimento" serial NOT NULL,
+	"idAssunto" serial NOT NULL,
+	"idProblema" serial NOT NULL
 ) WITH (
   OIDS=FALSE
 );
+
+
+
+ALTER TABLE "Atendimento" ADD CONSTRAINT "Atendimento_fk0" FOREIGN KEY ("idRegiao") REFERENCES "Regiao"("idRegiao");
+ALTER TABLE "Atendimento" ADD CONSTRAINT "Atendimento_fk1" FOREIGN KEY ("idTipoAtendimento") REFERENCES "TipoAtendimento"("idTipoAtendimento");
+ALTER TABLE "Atendimento" ADD CONSTRAINT "Atendimento_fk2" FOREIGN KEY ("idAssunto") REFERENCES "Assunto"("idAssunto");
+ALTER TABLE "Atendimento" ADD CONSTRAINT "Atendimento_fk3" FOREIGN KEY ("idProblema") REFERENCES "Problema"("idProblema");
