@@ -1,20 +1,17 @@
 from __future__ import annotations
 
-import os
 import urllib.parse
 from collections import defaultdict
-
-import requests
-from bs4 import BeautifulSoup
-from config import dataset_folder_name
-from config import dataset_ignore_list
-from config import dataset_source_url
-from config import dataset_years
+import os
+from typing import List
+from bs4 import BeautifulSoup as soup
+from requests import exceptions, get
 from tqdm import tqdm
+from config import dataset_folder_name, dataset_ignore_list, dataset_source_url, dataset_years
 
 
 class Extract:
-    def __init__(self, url: str, folder_name: str, years: list[int], ignore: list[str] | None = None):
+    def __init__(self, url: str, folder_name: str, years: List[int], ignore: List[str] | None = None):
         if ignore is None:
             ignore = []
         self.url = url
@@ -64,23 +61,28 @@ class Extract:
         if os.path.exists(file_path):
             print(f'Skipping {file_path} (already downloaded)')
             return
+        
+        try:
+            response = get(file_url, stream=True, timeout=15)
+            response.raise_for_status()
+            file_size = int(response.headers.get('Content-Length', 0))
 
-        response = requests.get(file_url, stream=True)
-        file_size = int(response.headers.get('Content-Length', 0))
+            with open(file_path, 'wb') as file:
+                with tqdm(total=file_size, unit='B', unit_scale=True, desc='Progress', leave=False) as pbar:
+                    for chunk in response.iter_content(chunk_size=1024):
+                        if chunk:
+                            file.write(chunk)
+                            pbar.update(len(chunk))
+        
+        except exceptions.RequestException as e:
+            print(f'Error downloading file: {file_url}\n   Complete error: {e}')
 
-        with open(file_path, 'wb') as file:
-            with tqdm(total=file_size, unit='B', unit_scale=True, desc='Progress', leave=False) as pbar:
-                for chunk in response.iter_content(chunk_size=1024):
-                    if chunk:
-                        file.write(chunk)
-                        pbar.update(len(chunk))
+    def _get_resource_elements(self) -> List[soup]:
+        response = get(self.url, timeout=15)
+        soup_resp = soup(response.content, 'html.parser')
+        return soup_resp.find_all(class_='resource-url-analytics')
 
-    def _get_resource_elements(self) -> list[BeautifulSoup]:
-        response = requests.get(self.url)
-        soup = BeautifulSoup(response.content, 'html.parser')
-        return soup.find_all(class_='resource-url-analytics')
-
-    def _is_valid_file(self, element: BeautifulSoup) -> bool:
+    def _is_valid_file(self, element: soup) -> bool:
         file_url = self._get_file_url(element)
         file_name = self._get_file_name(element)
 
@@ -90,10 +92,10 @@ class Extract:
             and all(term.lower() not in file_name.lower() for term in self.ignore)
         )
 
-    def _get_file_url(self, element: BeautifulSoup) -> str:
+    def _get_file_url(self, element: soup) -> str:
         return urllib.parse.urljoin(self.url, element['href'])
 
-    def _get_file_name(self, element: BeautifulSoup) -> str:
+    def _get_file_name(self, element: soup) -> str:
         return os.path.join(self.folder_name, element['href'].split('/')[-1])
 
     def _get_year_from_filename(self, filename: str) -> int:

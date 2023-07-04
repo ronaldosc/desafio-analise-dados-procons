@@ -8,5 +8,9 @@
     "flake8.args": [
         "--rcfile=.flake8"
     ],
-    "ubertab.enabled": false
+    "files.exclude": {
+        "**/.*": true,
+        "**/*.txt": true,
+        "**/LIC*": true
+    }
 }

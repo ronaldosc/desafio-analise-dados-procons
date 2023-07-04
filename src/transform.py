@@ -1,28 +1,25 @@
 from __future__ import annotations
 
-import contextlib
 import itertools
-
+import contextlib
+from typing import Dict, List, Tuple
+from pandas import DataFrame as DF, errors as err
 import pandas as pd
-from config import csv_encodings
-from config import csv_separators
-from config import dataset_folder_name
-from config import dataset_value_dictionary
-from config import dataset_years
-
+from config import csv_encodings, csv_separators
+from config import dataset_folder_name, DatasetDictionaryTypedDict, dataset_years
 
 class CSVReader:
-    def __init__(self, folder_name: str, years: list[int], value_dictionary: dict[str, tuple[str, int]]):
+    def __init__(self, folder_name: str, years: List[int], value_dictionary: Dict[str, Tuple[str, int]]):
         self.folder_name = folder_name
         self.years = years
         self.value_dictionary = value_dictionary
 
-    def read_csv(self, year_index: int, file_number: int) -> pd.DataFrame:
+    def read_csv(self, year_index: int, file_number: int) -> DF:
         csv_file = f'{self.folder_name}/{self.years[year_index]}_{file_number}.csv'
         print(csv_file)
 
         for encoding, separator in itertools.product(csv_encodings, csv_separators):
-            with contextlib.suppress(UnicodeDecodeError, KeyError, pd.errors.ParserError):
+            with contextlib.suppress(UnicodeDecodeError, KeyError, err.ParserError):
                 df = pd.read_csv(csv_file, encoding=encoding, sep=separator)
                 df = df.fillna(0)
                 for column, (data_type, slice_size) in self.value_dictionary.items():
@@ -32,18 +29,18 @@ class CSVReader:
                 return df
         raise ValueError('Failed to read CSV file with all encodings and separators')
 
-    def clean_cep_column(self, df: pd.DataFrame, column_name: str = 'CEPConsumidor') -> pd.DataFrame:
+    def clean_cep_column(self, df: DF, column_name: str = 'CEPConsumidor') -> DF:
         df[column_name] = df[column_name].str.replace('0.0', '')
         df[column_name] = df[column_name].str.replace('.', '0')
         df[column_name] = df[column_name].str[:-3] + '-' + df[column_name].str[-3:]
         return df
 
-    def sort_data_columns(self, df: pd.DataFrame) -> pd.DataFrame:
+    def sort_data_columns(self, df: DF) -> DF:
         return df.apply(lambda x: x.sort_values().reset_index(drop=True))
 
 
-def transform() -> pd.DataFrame:
-    csv_reader = CSVReader(dataset_folder_name, dataset_years, dataset_value_dictionary)
+def transform() -> DF:
+    csv_reader = CSVReader(dataset_folder_name, dataset_years, DatasetDictionaryTypedDict)
     df = csv_reader.read_csv(0, 1)
     df = csv_reader.clean_cep_column(df)
     df = csv_reader.sort_data_columns(df)

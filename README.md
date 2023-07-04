@@ -11,7 +11,9 @@
   >
   > de dados provenientes da **Administração Pública Brasileira**.
 
-### [Fonte dos Dados para este Projeto](https://dados.mj.gov.br/dataset/atendimentos-de-consumidores-nos-procons-sindec)
+## Fonte dos Dados para este Projeto  
+
+[Atendimentos de Consumidores nos Procons (Sindec) / Dados.MJ](https://dados.mj.gov.br/dataset/atendimentos-de-consumidores-nos-procons-sindec)
 
 ## Instruções
 
@@ -33,3 +35,18 @@
 - Visualização dos dados analisados;
 
 - Uso da análise _estatística básica_ nos dados.
+
+------
+  
+
+### Time Responsável pela Execução
+
+  >
+  > Ronaldo Scarpate &emsp;[@ronaldosc](https://github.com/ronaldosc)
+
+  >
+  > Geverson Fernandes &emsp;[@geversonfernandes](https://github.com/geversonfernandes)
+
+  >
+  > Vinícius Amorim &emsp;[@viniam](https://github.com/viniam)
+  
