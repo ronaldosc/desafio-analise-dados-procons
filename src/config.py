@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import Optional as Opt, TypeDict
 from datetime import datetime
-from typing_extensions import TypedDict
 
 csv_encodings = ['utf-8', 'cp1252']
 csv_separators = [';', '\t']
@@ -17,24 +16,24 @@ dataset_years = [2019, 2020, 2021, 2022, 2023]
 
 
 class DatasetDictionaryTypedDict(TypedDict):
-    AnoAtendimento: Optional[int]
-    TrimestreAtendimento: Optional[int]
-    MesAtendimento: Optional[int]
-    DataAtendimento: Optional[datetime]
-    CodigoRegiao: Optional[int]
-    Regiao: Optional[str]
-    UF: Optional[str]
-    CodigoTipoAtendimento: Optional[int]
-    DescricaoTipoAtendimento: Optional[str]
-    CodigoAssunto: Optional[int]
-    DescricaoAssunto: Optional[str]
-    GrupoAssunto: Optional[str]
-    CodigoProblema: Optional[int]
-    DescricaoProblema: Optional[str]
-    GrupoProblema: Optional[str]
-    SexoConsumidor: Optional[str]
-    FaixaEtariaConsumidor: Optional[str]
-    CEPConsumidor: Optional[str]
+    AnoAtendimento: Opt[int]
+    TrimestreAtendimento: Opt[int]
+    MesAtendimento: Opt[int]
+    DataAtendimento: datetime
+    CodigoRegiao: Opt[int]
+    Regiao: str
+    UF: str
+    CodigoTipoAtendimento: Opt[int]
+    DescricaoTipoAtendimento: str
+    CodigoAssunto: Opt[int]
+    DescricaoAssunto: str
+    GrupoAssunto: str
+    CodigoProblema: Opt[int]
+    DescricaoProblema: str
+    GrupoProblema: str
+    SexoConsumidor: str
+    FaixaEtariaConsumidor: str
+    CEPConsumidor: str
 
 #--------------
 # Validations
