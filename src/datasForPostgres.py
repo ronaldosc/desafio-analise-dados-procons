@@ -1,6 +1,11 @@
+from __future__ import annotations
+
+import itertools
+
 from database.database_config import create_connection
 from psycopg2 import Error
 from transform import transform
+
 
 def insert_data_from_dataframe(df):
     try:
@@ -49,14 +54,14 @@ def insert_data_from_dataframe(df):
 
         # Confirmar a transação
         conn.commit()
-        print("Dados copiados com sucesso")
+        print('Dados copiados com sucesso')
 
         return True
 
     except (Exception, Error) as error:
         # Reverter a transação em caso de erro
         conn.rollback()
-        print("Erro ao copiar os dados:", error)
+        print('Erro ao copiar os dados:', error)
 
     finally:
         if conn:
@@ -64,7 +69,10 @@ def insert_data_from_dataframe(df):
             conn.autocommit = True
             cursor.close()
             conn.close()
-            print("Conexão fechada.")
+            print('Conexão fechada.')
 
-df = transform()
-insert_data_from_dataframe(df)
+
+for year, trimester in itertools.product(range(2), range(4)):
+    print(f'{2019+year}_{1+trimester}')
+    df = transform(year_index=year, trimester_index=trimester + 1)
+    insert_data_from_dataframe(df)
