@@ -13,12 +13,6 @@ def insert_data_from_dataframe(df: DF):
         conn.autocommit = False
 
         for index, row in df.iterrows():
-            # Inserção na tabela ChamadosProcon
-            # cursor.execute("""
-            #     INSERT INTO "ChamadosProcon" ("dataAtendimento", "nomeRegiao", "ufRegiao", "descricaoAtendimento", "descricaoAssunto", "descricaoProblema", "sexo", "faixaEtaria", "cep")
-            #     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-            # """, (row['DataAtendimento'], row['Regiao'], row['UF'], row['DescricaoTipoAtendimento'], row['DescricaoAssunto'], row['DescricaoProblema'], row['SexoConsumidor'], row['FaixaEtariaConsumidor'], row['CEPConsumidor'],))
-
             # Inserção na tabela Regiao
             cursor.execute(
                 """
