@@ -2,14 +2,13 @@ from __future__ import annotations
 
 import itertools
 import contextlib
-from typing import Dict, List, Tuple
 from pandas import DataFrame as DF, errors as err
 import pandas as pd
 from config import csv_encodings, csv_separators
 from config import dataset_folder_name, DatasetDictionaryTypedDict, dataset_years
 
 class CSVReader:
-    def __init__(self, folder_name: str, years: List[int], value_dictionary: Dict[str, Tuple[str, int]]):
+    def __init__(self, folder_name: str, years: list[int], value_dictionary: dict[str, tuple[str, int]]):
         self.folder_name = folder_name
         self.years = years
         self.value_dictionary = value_dictionary
