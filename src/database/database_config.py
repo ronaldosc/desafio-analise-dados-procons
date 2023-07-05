@@ -39,22 +39,21 @@ def execute_schema_queries():
         conn = create_connection()
         cursor = conn.cursor()
 
-        # Ler o arquivo schema.sql
+        # Read schema.sql
         queries = pathlib.Path('src/database/schema.sql').read_text()
-        # Executar as queries
+        # Execute queries
         cursor.execute(queries)
         conn.commit()
-        print('Queries executadas com sucesso.')
+        print('Queries successfully executed.')
         return True
 
     except (Exception, err) as error:
         conn.rollback()
-        print('Erro na execução das queries:', error)
+        print('Error while executing queries:', error)
 
     finally:
         if conn:
-            # Restaurar o autocommit para True
             conn.autocommit = True
             cursor.close()
             conn.close()
-            print('Conexão fechada.')
+            print('Conection closed.')
