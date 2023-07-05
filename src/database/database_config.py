@@ -1,6 +1,7 @@
 from os import getenv
 from dotenv import load_dotenv
-from psycopg2 import _psycopg as pg, Error as err
+import psycopg2 as pg
+from psycopg2 import Error as err
 
 load_dotenv()
 
