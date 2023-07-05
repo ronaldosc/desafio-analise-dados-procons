@@ -10,6 +10,7 @@ pre-commit
 psycopg2
 python-dotenv
 requests
+seaborn
 tqdm
 typing
 virtualenv
