@@ -42,9 +42,9 @@ class CSVReader:
         return df.apply(lambda x: x.sort_values().reset_index(drop=True))
 
 
-def transform() -> pd.DataFrame:
+def transform(year_index: int = 0, trimester_index: int = 1) -> pd.DataFrame:
     csv_reader = CSVReader(dataset_folder_name, dataset_years, dataset_value_dictionary)
-    df = csv_reader.read_csv(0, 1)
+    df = csv_reader.read_csv(year_index, trimester_index)
     df = csv_reader.clean_cep_column(df)
     df = csv_reader.sort_data_columns(df)
 
