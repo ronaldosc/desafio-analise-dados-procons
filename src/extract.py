@@ -3,7 +3,6 @@ from __future__ import annotations
 import urllib.parse
 from collections import defaultdict
 import os
-from typing import List
 from bs4 import BeautifulSoup as soup
 from requests import exceptions, get
 from tqdm import tqdm
@@ -11,7 +10,7 @@ from config import dataset_folder_name, dataset_ignore_list, dataset_source_url,
 
 
 class Extract:
-    def __init__(self, url: str, folder_name: str, years: List[int], ignore: List[str] | None = None):
+    def __init__(self, url: str, folder_name: str, years: list[int], ignore: list[str] | None = None):
         if ignore is None:
             ignore = []
         self.url = url
@@ -77,7 +76,7 @@ class Extract:
         except exceptions.RequestException as e:
             print(f'Error downloading file: {file_url}\n   Complete error: {e}')
 
-    def _get_resource_elements(self) -> List[soup]:
+    def _get_resource_elements(self) -> list[soup]:
         response = get(self.url, timeout=15)
         soup_resp = soup(response.content, 'html.parser')
         return soup_resp.find_all(class_='resource-url-analytics')
