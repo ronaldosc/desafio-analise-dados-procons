@@ -1,5 +1,5 @@
 from pandas import DataFrame as DF
-from psycopg2 import Error
+from psycopg2 import Error as err
 from database.database_config import create_connection
 from transform import transform
 
@@ -65,7 +65,7 @@ def insert_data_from_dataframe(df: DF):
 
         return True
 
-    except (Exception, Error) as error:
+    except (Exception, err) as error:
         # Reverter a transação em caso de erro
         if Exception:
             conn.rollback()
