@@ -7,6 +7,7 @@ from database.database_config import create_connection
 from flask import Flask
 from flask import render_template
 from flask import request
+from graphs.demografica_faixa_etaria_atendimento import obter_dados_distribuicao_faixa_etaria
 from graphs.demografica_genero_atendimento import obter_dados_distribuicao_genero
 from graphs.geografica_regiao_distribuicao import obter_dados_distribuicao_regiao
 from graphs.geografica_regiao_variacao import obter_dados_variacao_tempo
@@ -80,27 +81,8 @@ def distribuicao_sexo():
 
 @app.route('/distribuicao-faixa-etaria')
 def distribuicao_faixa_etaria():
-    # Consulta ao banco de dados para obter a distribuição dos atendimentos por faixa etária do consumidor
-    cur = conn.cursor()
-    cur.execute('SELECT FaixaEtariaConsumidor, COUNT(*) AS CountAtendimentos FROM Atendimento GROUP BY FaixaEtariaConsumidor')
-    data = cur.fetchall()
-    cur.close()
-
-    # Processar os dados
-    faixas_etarias = []
-    contagem = []
-    for row in data:
-        faixas_etarias.append(row[0])
-        contagem.append(row[1])
-
-    # Criar o gráfico de pizza
-    fig = go.Figure(data=go.Pie(labels=faixas_etarias, values=contagem))
-
-    fig.update_layout(
-        title='Distribuição dos Atendimentos por Faixa Etária do Consumidor',
-    )
-
-    return render_template('distribuicao_faixa_etaria.html', plot=fig.to_html())
+    plot = obter_dados_distribuicao_faixa_etaria()
+    return render_template('distribuicao_faixa_etaria.html', plot=plot)
 
 
 @app.route('/principais-problemas-genero')
