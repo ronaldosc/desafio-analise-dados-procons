@@ -9,6 +9,7 @@ from flask import render_template
 from flask import request
 from graphs.demografica_faixa_etaria_atendimento import obter_dados_distribuicao_faixa_etaria
 from graphs.demografica_genero_atendimento import obter_dados_distribuicao_genero
+from graphs.demografica_genero_problema import obter_dados_principais_problemas_genero
 from graphs.geografica_regiao_distribuicao import obter_dados_distribuicao_regiao
 from graphs.geografica_regiao_variacao import obter_dados_variacao_tempo
 from graphs.reclamacao_assuntos import obter_dados_assuntos_recorrentes
@@ -87,49 +88,8 @@ def distribuicao_faixa_etaria():
 
 @app.route('/principais-problemas-genero')
 def principais_problemas_genero():
-    # Consulta ao banco de dados para obter os principais problemas relatados por diferentes gêneros
-    cur = conn.cursor()
-    cur.execute('SELECT Problema.DescricaoProblema, Atendimento.SexoConsumidor, COUNT(*) AS CountProblemas FROM Atendimento INNER JOIN Problema ON Atendimento.CodigoProblema = Problema.CodigoProblema GROUP BY Problema.DescricaoProblema, Atendimento.SexoConsumidor ORDER BY CountProblemas DESC')
-    data = cur.fetchall()
-    cur.close()
-
-    # Processar os dados
-    problemas = []
-    generos = []
-    contagem = []
-    for row in data:
-        problema = row[0].split('(')[0].strip()
-        genero = row[1]
-        count = row[2]
-
-        if problema not in problemas:
-            problemas.append(problema)
-        if genero not in generos:
-            generos.append(genero)
-
-        contagem.append(count)
-
-    # Ordenar os problemas por contagem decrescente
-    problemas_ordenados = [problema for _, problema in sorted(zip(contagem, problemas), reverse=True)]
-    problemas_5 = problemas_ordenados[:5]
-
-    # Filtrar os dados apenas para os 5 problemas mais frequentes
-    filtered_data = [row for row in data if row[0] in problemas_5]
-
-    # Criar o gráfico de barras
-    fig = go.Figure()
-
-    for genero in generos:
-        genero_contagem = [row[2] for row in filtered_data if row[1] == genero]
-        fig.add_trace(go.Bar(x=problemas_5, y=genero_contagem, name=genero))
-
-    fig.update_layout(
-        title='Principais Problemas Relatados por Gênero',
-        xaxis=dict(title='Problema'),
-        yaxis=dict(title='Contagem')
-    )
-
-    return render_template('principais_problemas_genero.html', plot=fig.to_html())
+    plot = obter_dados_principais_problemas_genero()
+    return render_template('principais_problemas_genero.html', plot=plot)
 
 
 @app.route('/principais-problemas-faixa-etaria')
