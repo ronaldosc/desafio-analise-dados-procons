@@ -7,6 +7,7 @@ from database.database_config import create_connection
 from flask import Flask
 from flask import render_template
 from flask import request
+from graphs.demografica_genero_atendimento import obter_dados_distribuicao_genero
 from graphs.geografica_regiao_distribuicao import obter_dados_distribuicao_regiao
 from graphs.geografica_regiao_variacao import obter_dados_variacao_tempo
 from graphs.reclamacao_assuntos import obter_dados_assuntos_recorrentes
@@ -73,27 +74,8 @@ def destaques_regiao_uf():
 
 @app.route('/distribuicao-genero')
 def distribuicao_sexo():
-    # Consulta ao banco de dados para obter a distribuição dos atendimentos por sexo do consumidor
-    cur = conn.cursor()
-    cur.execute('SELECT SexoConsumidor, COUNT(*) AS CountAtendimentos FROM Atendimento GROUP BY SexoConsumidor')
-    data = cur.fetchall()
-    cur.close()
-
-    # Processar os dados
-    sexos = []
-    contagem = []
-    for row in data:
-        sexos.append(row[0])
-        contagem.append(row[1])
-
-    # Criar o gráfico de pizza
-    fig = go.Figure(data=go.Pie(labels=sexos, values=contagem))
-
-    fig.update_layout(
-        title='Distribuição dos Atendimentos por Sexo do Consumidor',
-    )
-
-    return render_template('distribuicao_genero.html', plot=fig.to_html())
+    plot = obter_dados_distribuicao_genero()
+    return render_template('distribuicao_genero.html', plot=plot)
 
 
 @app.route('/distribuicao-faixa-etaria')
