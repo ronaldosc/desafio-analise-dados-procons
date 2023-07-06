@@ -2,12 +2,12 @@
 
 ## Objetivos
 
-  >Realizar os processos de:  
+  >Realizar os processos de:
   >
   >- ‘coleta’,
   >- ‘limpeza’,
   >- ‘análise’ e,
-  >- ‘visualização’  
+  >- ‘visualização’
   >
   > de dados provenientes da **Administração Pública Brasileira**.
 
