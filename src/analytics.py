@@ -11,6 +11,7 @@ from graphs.geografica_regiao_distribuicao import obter_dados_distribuicao_regia
 from graphs.geografica_regiao_variacao import obter_dados_variacao_tempo
 from graphs.reclamacao_assuntos import obter_dados_assuntos_recorrentes
 from graphs.reclamacao_problema_comum import obter_dados_problemas_comuns
+from graphs.reclamacao_problema_regiao import obter_dados_destaques_regiao_uf
 from graphs.temporal_sazonalidade import obter_dados_sazonalidade
 from graphs.temporal_tendencias import obter_dados_tendencias
 
@@ -51,51 +52,23 @@ def variacao_tempo():
 
 @app.route('/assuntos-recorrentes')
 def assuntos_recorrentes():
-    plot = obter_dados_assuntos_recorrentes()
+    ano_selecionado = request.args.get('ano')
+    plot = obter_dados_assuntos_recorrentes(ano_selecionado)
     return render_template('assuntos_recorrentes.html', plot=plot)
 
 
 @app.route('/problemas-comuns')
 def problemas_comuns():
-    plot = obter_dados_problemas_comuns()
+    ano_selecionado = request.args.get('ano')
+    plot = obter_dados_problemas_comuns(ano_selecionado)
     return render_template('problemas_comuns.html', plot=plot)
 
 
 @app.route('/destaques-regiao-uf')
 def destaques_regiao_uf():
-    # Consulta ao banco de dados para verificar os assuntos e problemas que se destacam em determinadas regiões ou UF
     uf_regiao = request.args.get('uf_regiao')
-
-    cur = conn.cursor()
-    query = 'SELECT Regiao, UF, Assunto.DescricaoAssunto, Problema.DescricaoProblema, COUNT(*) AS Contagem FROM Atendimento INNER JOIN Regiao ON Atendimento.CodigoRegiao = Regiao.CodigoRegiao INNER JOIN Assunto ON Atendimento.CodigoAssunto = Assunto.CodigoAssunto INNER JOIN Problema ON Atendimento.CodigoProblema = Problema.CodigoProblema'
-    if uf_regiao:
-        query += f" WHERE Regiao = '{uf_regiao}' OR UF = '{uf_regiao}'"
-    query += ' GROUP BY Regiao, UF, Assunto.DescricaoAssunto, Problema.DescricaoProblema ORDER BY Contagem DESC'
-
-    cur.execute(query)
-    data = cur.fetchall()
-    cur.close()
-
-    # Processar os dados
-    regioes_uf = []
-    assuntos = []
-    contagem = []
-    for row in data:
-        regiao_uf = f'{row[0]} - {row[1]}'
-        assuntos.append(row[2])
-        contagem.append(row[4])
-        regioes_uf.append(regiao_uf)
-
-    # Criar o gráfico de barras
-    fig = go.Figure(data=go.Bar(x=regioes_uf, y=contagem))
-
-    fig.update_layout(
-        title='Destaques por Região ou UF',
-        xaxis=dict(title='Região ou UF'),
-        yaxis=dict(title='Contagem')
-    )
-
-    return render_template('destaques_regiao_uf.html', plot=fig.to_html())
+    plot = obter_dados_destaques_regiao_uf(uf_regiao)
+    return render_template('destaques_regiao_uf.html', plot=plot)
 
 
 @app.route('/distribuicao-genero')
