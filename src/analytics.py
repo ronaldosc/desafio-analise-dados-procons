@@ -9,6 +9,7 @@ from flask import render_template
 from flask import request
 from graphs.geografica_regiao_distribuicao import obter_dados_distribuicao_regiao
 from graphs.geografica_regiao_variacao import obter_dados_variacao_tempo
+from graphs.reclamacao_assuntos import obter_dados_assuntos_recorrentes
 from graphs.temporal_sazonalidade import obter_dados_sazonalidade
 from graphs.temporal_tendencias import obter_dados_tendencias
 
@@ -49,37 +50,8 @@ def variacao_tempo():
 
 @app.route('/assuntos-recorrentes')
 def assuntos_recorrentes():
-    # Consulta ao banco de dados para obter os assuntos mais recorrentes nas reclamações
-    ano_selecionado = request.args.get('ano')
-
-    cur = conn.cursor()
-    query = 'SELECT Assunto.DescricaoAssunto, COUNT(*) AS CountReclamacoes FROM Atendimento INNER JOIN Assunto ON Atendimento.CodigoAssunto = Assunto.CodigoAssunto'
-    if ano_selecionado:
-        query += f' WHERE EXTRACT(YEAR FROM Atendimento.DataAtendimento) = {ano_selecionado}'
-    query += ' GROUP BY Assunto.DescricaoAssunto ORDER BY CountReclamacoes DESC LIMIT 5'
-
-    cur.execute(query)
-    data = cur.fetchall()
-    cur.close()
-
-    # Processar os dados
-    assuntos = []
-    contagem = []
-    for row in data:
-        assunto = row[0].split('(')[0].strip()
-        assuntos.append(assunto)
-        contagem.append(row[1])
-
-    # Criar o gráfico de barras
-    fig = go.Figure(data=go.Bar(x=assuntos, y=contagem))
-
-    fig.update_layout(
-        title='Assuntos Mais Recorrentes nas Reclamações',
-        xaxis=dict(title='Assunto'),
-        yaxis=dict(title='Contagem')
-    )
-
-    return render_template('assuntos_recorrentes.html', plot=fig.to_html())
+    plot = obter_dados_assuntos_recorrentes()
+    return render_template('assuntos_recorrentes.html', plot=plot)
 
 
 @app.route('/problemas-comuns')
