@@ -8,9 +8,14 @@
             background-color: #f2f2f2;
             padding: 10px;
             text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        }
+
+        .header h2 {
+            margin: 10px 0;
+        }
+
+        .header-category {
+            margin-bottom: 20px;
         }
 
         .header a {
@@ -44,18 +49,33 @@
 
 <body>
     <div class="header">
-        <a href="/">Página Inicial</a>
-        <a href="/temporal_tendencias">Tendências</a>
-        <a href="/temporal_sazonalidade">Sazonalidade</a>
-        <a href="/geografica_regiao_distribuicao">Mapa</a>
-        <a href="/geografica_regiao_variacao">Variação ao Longo do Tempo</a>
-        <a href="/reclamacao_assuntos">Assuntos Recorrentes</a>
-        <a href="/reclamacao_problema_comum">Problemas Comuns</a>
-        <a href="/reclamacao_problema_regiao">Destaques por Região ou UF</a>
-        <a href="/demografica_genero_atendimento">Distribuição dos Atendimentos por Gênero</a>
-        <a href="/demografica_faixa_etaria_atendimento">Distribuição dos Atendimentos por Faixa Etária</a>
-        <a href="/demografica_genero_problema">Principais Problemas por Gênero</a>
-        <a href="/demografica_faixa_etaria_problema">Principais Problemas por Faixa Etária</a>
+        <a href="/">Inicio</a>
+        <div class="header-category">
+            <h2>Temporal</h2>
+            <a href="/temporal_tendencias">Tendências</a>
+            <a href="/temporal_sazonalidade">Sazonalidade</a>
+        </div>
+
+        <div class="header-category">
+            <h2>Geográfica</h2>
+            <a href="/geografica_regiao_distribuicao">Mapa</a>
+            <a href="/geografica_regiao_variacao">Variação ao Longo do Tempo</a>
+        </div>
+
+        <div class="header-category">
+            <h2>Reclamação</h2>
+            <a href="/reclamacao_assuntos">Assuntos Recorrentes</a>
+            <a href="/reclamacao_problema_comum">Problemas Comuns</a>
+            <a href="/reclamacao_problema_regiao">Destaques por Região ou UF</a>
+        </div>
+
+        <div class="header-category">
+            <h2>Demográfica</h2>
+            <a href="/demografica_genero_atendimento">Distribuição dos Atendimentos por Gênero</a>
+            <a href="/demografica_faixa_etaria_atendimento">Distribuição dos Atendimentos por Faixa Etária</a>
+            <a href="/demografica_genero_problema">Principais Problemas por Gênero</a>
+            <a href="/demografica_faixa_etaria_problema">Principais Problemas por Faixa Etária</a>
+        </div>
     </div>
 </body>
 

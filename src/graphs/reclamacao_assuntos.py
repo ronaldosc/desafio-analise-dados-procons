@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import plotly.graph_objects as go
 from database.database_config import create_connection
-from flask import request
 
 # Conectar ao banco de dados PostgreSQL
 conn = create_connection()
