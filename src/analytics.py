@@ -10,6 +10,7 @@ from flask import request
 from graphs.geografica_regiao_distribuicao import obter_dados_distribuicao_regiao
 from graphs.geografica_regiao_variacao import obter_dados_variacao_tempo
 from graphs.reclamacao_assuntos import obter_dados_assuntos_recorrentes
+from graphs.reclamacao_problema_comum import obter_dados_problemas_comuns
 from graphs.temporal_sazonalidade import obter_dados_sazonalidade
 from graphs.temporal_tendencias import obter_dados_tendencias
 
@@ -56,37 +57,8 @@ def assuntos_recorrentes():
 
 @app.route('/problemas-comuns')
 def problemas_comuns():
-    # Consulta ao banco de dados para obter os problemas mais comuns relatados pelos consumidores
-    ano_selecionado = request.args.get('ano')
-
-    cur = conn.cursor()
-    query = 'SELECT Problema.DescricaoProblema, COUNT(*) AS CountProblemas FROM Atendimento INNER JOIN Problema ON Atendimento.CodigoProblema = Problema.CodigoProblema'
-    if ano_selecionado:
-        query += f' WHERE EXTRACT(YEAR FROM Atendimento.DataAtendimento) = {ano_selecionado}'
-    query += ' GROUP BY Problema.DescricaoProblema ORDER BY CountProblemas DESC LIMIT 5'
-
-    cur.execute(query)
-    data = cur.fetchall()
-    cur.close()
-
-    # Processar os dados
-    problemas = []
-    contagem = []
-    for row in data:
-        problema = row[0].split('(')[0].strip()
-        problemas.append(problema)
-        contagem.append(row[1])
-
-    # Criar o gráfico de barras
-    fig = go.Figure(data=go.Bar(x=problemas, y=contagem))
-
-    fig.update_layout(
-        title='Problemas Mais Comuns Relatados pelos Consumidores',
-        xaxis=dict(title='Problema'),
-        yaxis=dict(title='Contagem')
-    )
-
-    return render_template('problemas_comuns.html', plot=fig.to_html())
+    plot = obter_dados_problemas_comuns()
+    return render_template('problemas_comuns.html', plot=plot)
 
 
 @app.route('/destaques-regiao-uf')
