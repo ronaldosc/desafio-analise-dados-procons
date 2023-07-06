@@ -3,7 +3,7 @@
 
 <head>
     <style>
-        nav { 
+        nav {
             background-color: #333;
         }
 
@@ -15,7 +15,7 @@
             display: inline-block;
         }
 
-        nav li a{
+        nav li a {
             display: inline-block;
             color: #f2f2f2;
             text-decoration: none;
@@ -23,13 +23,13 @@
         }
 
         nav li a:hover {
-            background-color: blueviolet;
+            background-color: rgb(99, 110, 250);
             cursor: pointer;
         }
 
         .dropdown-menu {
             position: absolute;
-            box-shadow: 0 0 2px blueviolet;
+            box-shadow: 0 0 2px rgb(99, 110, 250);
             display: none;
             background-color: #333;
             z-index: 9999;
@@ -43,9 +43,9 @@
         .dropdown:hover .dropdown-menu {
             display: block;
         }
-
     </style>
 </head>
+
 <body>
     <div class="header">
         <nav class="nav-menu">
@@ -82,7 +82,8 @@
                     <a>Demográfica</a>
                     <div class='dropdown-menu'>
                         <a href="/demografica_genero_atendimento">Distribuição dos Atendimentos por Gênero</a>
-                        <a href="/demografica_faixa_etaria_atendimento">Distribuição dos Atendimentos por Faixa Etária</a>
+                        <a href="/demografica_faixa_etaria_atendimento">Distribuição dos Atendimentos por Faixa
+                            Etária</a>
                         <a href="/demografica_genero_problema">Principais Problemas por Gênero</a>
                         <a href="/demografica_faixa_etaria_problema">Principais Problemas por Faixa Etária</a>
                     </div>
@@ -92,4 +93,5 @@
         </nav>
     </div>
 </body>
+
 </html>
