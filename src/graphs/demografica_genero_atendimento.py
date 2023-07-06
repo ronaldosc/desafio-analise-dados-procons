@@ -10,7 +10,7 @@ conn = create_connection()
 def obter_dados_distribuicao_genero():
     # Consulta ao banco de dados para obter a distribuição dos atendimentos por sexo do consumidor
     cur = conn.cursor()
-    cur.execute('SELECT SexoConsumidor, COUNT(*) AS CountAtendimentos FROM Atendimento GROUP BY SexoConsumidor')
+    cur.execute("SELECT CASE WHEN SexoConsumidor IN ('0', 'N') THEN 'Nao informado' ELSE SexoConsumidor END AS Sexo, COUNT(*) AS CountAtendimentos FROM Atendimento GROUP BY Sexo")
     data = cur.fetchall()
     cur.close()
 

@@ -10,7 +10,7 @@ conn = create_connection()
 def obter_dados_principais_problemas_genero():
     # Consulta ao banco de dados para obter os principais problemas relatados por diferentes gêneros
     cur = conn.cursor()
-    cur.execute('SELECT Problema.DescricaoProblema, Atendimento.SexoConsumidor, COUNT(*) AS CountProblemas FROM Atendimento INNER JOIN Problema ON Atendimento.CodigoProblema = Problema.CodigoProblema GROUP BY Problema.DescricaoProblema, Atendimento.SexoConsumidor ORDER BY CountProblemas DESC')
+    cur.execute("SELECT Problema.DescricaoProblema, Atendimento.SexoConsumidor, COUNT(*) AS CountProblemas FROM Atendimento INNER JOIN Problema ON Atendimento.CodigoProblema = Problema.CodigoProblema WHERE Atendimento.SexoConsumidor <> 'N' GROUP BY Problema.DescricaoProblema, Atendimento.SexoConsumidor ORDER BY CountProblemas DESC")
     data = cur.fetchall()
     cur.close()
 
