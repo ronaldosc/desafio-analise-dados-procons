@@ -1,3 +1,4 @@
+{% include 'global.html' %}
 {% include 'header.html' %}
 
 <!DOCTYPE html>
@@ -8,10 +9,13 @@
 </head>
 
 <body>
-    <h1>Principais Problemas Relatados por Gênero</h1>
-    <div>
-        {{ plot | safe }}
-    </div>
+    <main>
+        <h1>Principais Problemas Relatados por Gênero</h1>
+        <div>
+            {{ plot | safe }}
+        </div>
+    </main>
+    {% include 'footer.html' %}
 </body>
 
 </html>
