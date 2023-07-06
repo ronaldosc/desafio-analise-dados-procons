@@ -13,72 +13,94 @@ def insert_data_from_dataframe(df):
         conn = create_connection()
         cursor = conn.cursor()
 
-        # Iniciar a transação
-        conn.autocommit = False
-
         total_rows = len(df)
         progress_bar = tqdm(total=total_rows)
 
-        for index, row in df.iterrows():
-            # Inserção na tabela Regiao
-            cursor.execute("""
-                INSERT INTO Regiao (CodigoRegiao, Regiao)
-                VALUES (%s, %s)
-                ON CONFLICT (CodigoRegiao) DO NOTHING
-            """, (row['CodigoRegiao'], row['Regiao']))
+        batch_size = 50000  # Set the desired batch size
 
-            # Inserção na tabela TipoAtendimento
-            cursor.execute("""
-                INSERT INTO TipoAtendimento (CodigoTipoAtendimento, DescricaoTipoAtendimento)
-                VALUES (%s, %s)
-                ON CONFLICT (CodigoTipoAtendimento) DO NOTHING
-            """, (row['CodigoTipoAtendimento'], row['DescricaoTipoAtendimento']))
+        # Create batches of rows for batch insertion
+        rows_batches = [df[i:i + batch_size] for i in range(0, total_rows, batch_size)]
 
-            # Inserção na tabela Assunto
-            cursor.execute("""
-                INSERT INTO Assunto (CodigoAssunto, DescricaoAssunto, GrupoAssunto)
-                VALUES (%s, %s, %s)
-                ON CONFLICT (CodigoAssunto) DO NOTHING
-            """, (row['CodigoAssunto'], row['DescricaoAssunto'], row['GrupoAssunto']))
+        # Start a transaction using the context manager
+        with conn:
+            for batch in rows_batches:
+                rows = []
+                for index, row in batch.iterrows():
+                    # Create a tuple of values for each row
+                    row_data = (
+                        row['CodigoRegiao'], row['Regiao'],
+                        row['CodigoTipoAtendimento'], row['DescricaoTipoAtendimento'],
+                        row['CodigoAssunto'], row['DescricaoAssunto'], row['GrupoAssunto'],
+                        row['CodigoProblema'], row['DescricaoProblema'], row['GrupoProblema'],
+                        row['AnoAtendimento'], row['TrimestreAtendimento'], row['MesAtendimento'], row['DataAtendimento'],
+                        row['UF'], row['SexoConsumidor'], row['FaixaEtariaConsumidor'], row['CEPConsumidor']
+                    )
+                    rows.append(row_data)
 
-            # Inserção na tabela Problema
-            cursor.execute("""
-                INSERT INTO Problema (CodigoProblema, DescricaoProblema, GrupoProblema)
-                VALUES (%s, %s, %s)
-                ON CONFLICT (CodigoProblema) DO NOTHING
-            """, (row['CodigoProblema'], row['DescricaoProblema'], row['GrupoProblema']))
+                # Insertion on table Regiao
+                cursor.executemany("""
+                    INSERT INTO Regiao (CodigoRegiao, Regiao)
+                    VALUES (%s, %s)
+                    ON CONFLICT (CodigoRegiao) DO NOTHING
+                """, [(row[0], row[1]) for row in rows])
 
-            # Inserção na tabela Atendimento
-            cursor.execute("""
-                INSERT INTO Atendimento (AnoAtendimento, TrimestreAtendimento, MesAtendimento, DataAtendimento,
-                                        CodigoRegiao, UF, CodigoTipoAtendimento, CodigoAssunto, CodigoProblema,
-                                        SexoConsumidor, FaixaEtariaConsumidor, CEPConsumidor)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """, (row['AnoAtendimento'], row['TrimestreAtendimento'], row['MesAtendimento'], row['DataAtendimento'],
-                  row['CodigoRegiao'], row['UF'], row['CodigoTipoAtendimento'], row['CodigoAssunto'],
-                  row['CodigoProblema'], row['SexoConsumidor'], row['FaixaEtariaConsumidor'], row['CEPConsumidor']))
+                # Insertion on table TipoAtendimento
+                cursor.executemany("""
+                    INSERT INTO TipoAtendimento (CodigoTipoAtendimento, DescricaoTipoAtendimento)
+                    VALUES (%s, %s)
+                    ON CONFLICT (CodigoTipoAtendimento) DO NOTHING
+                """, [(row[2], row[3]) for row in rows])
 
-            progress_bar.update(1)
+                # Insertion on table Assunto
+                cursor.executemany("""
+                    INSERT INTO Assunto (CodigoAssunto, DescricaoAssunto, GrupoAssunto)
+                    VALUES (%s, %s, %s)
+                    ON CONFLICT (CodigoAssunto) DO NOTHING
+                """, [(row[4], row[5], row[6]) for row in rows])
 
-        # Confirmar a transação
-        conn.commit()
-        print('Dados copiados com sucesso')
+                # Insertion on table Problema
+                cursor.executemany("""
+                    INSERT INTO Problema (CodigoProblema, DescricaoProblema, GrupoProblema)
+                    VALUES (%s, %s, %s)
+                    ON CONFLICT (CodigoProblema) DO NOTHING
+                """, [(row[7], row[8], row[9]) for row in rows])
+
+                # Insertion on table Atendimento
+                cursor.executemany("""
+                    INSERT INTO Atendimento (AnoAtendimento, TrimestreAtendimento, MesAtendimento, DataAtendimento,
+                                            CodigoRegiao, UF, CodigoTipoAtendimento, CodigoAssunto, CodigoProblema,
+                                            SexoConsumidor, FaixaEtariaConsumidor, CEPConsumidor)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, [(row[10], row[11], row[12], row[13], row[0], row[14], row[2], row[4], row[7], row[15], row[16], row[17]) for row in rows])
+
+                progress_bar.update(len(batch))
+
+        progress_bar.close()
+        print('Data copied successfully')
 
         return True
 
     except (Exception, Error) as error:
-        conn.rollback()
         print('Error while executing queries:', error)
-
+        return False
     finally:
         if conn:
-            conn.autocommit = True
             cursor.close()
             conn.close()
-            progress_bar.close()
-            print('Conection closed.')
+            print('Connection closed.')
 
 
-for year, trimester in itertools.product(range(2), range(4)):
+# Set the desired values for year and trimester
+year_values = range(2)
+trimester_values = range(4)
+
+# Create the connection outside the loop
+conn = create_connection()
+
+for year, trimester in itertools.product(year_values, trimester_values):
     df = transform(year_index=year, trimester_index=trimester + 1)
     insert_data_from_dataframe(df)
+
+# Close the connection outside the loop
+if conn:
+    conn.close()
