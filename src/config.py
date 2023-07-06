@@ -6,7 +6,7 @@ csv_separators = [';', '\t']
 dataset_source_url = 'https://dados.mj.gov.br/dataset/atendimentos-de-consumidores-nos-procons-sindec'
 dataset_folder_name = 'csv_files'
 dataset_ignore_list = ['fornecedor']
-dataset_years = [2019, 2020, 2021, 2022, 2023]
+dataset_years = [2019, 2020]
 
 # key: column name
 # value: tuple(data type, slice size)
