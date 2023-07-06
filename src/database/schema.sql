@@ -1,4 +1,4 @@
--- Tabela: Atendimento
+-- Table: Atendimento
 CREATE TABLE Atendimento (
 	IDAtendimento SERIAL PRIMARY KEY,
 	AnoAtendimento INT,
@@ -14,23 +14,23 @@ CREATE TABLE Atendimento (
 	FaixaEtariaConsumidor VARCHAR,
 	CEPConsumidor VARCHAR
 );
--- Tabela: Regiao
+-- Table: Regiao
 CREATE TABLE Regiao (
 	CodigoRegiao VARCHAR(2) PRIMARY KEY,
 	Regiao VARCHAR(15)
 );
--- Tabela: TipoAtendimento
+-- Table: TipoAtendimento
 CREATE TABLE TipoAtendimento (
 	CodigoTipoAtendimento INT PRIMARY KEY,
 	DescricaoTipoAtendimento VARCHAR
 );
--- Tabela: Assunto
+-- Table: Assunto
 CREATE TABLE Assunto (
 	CodigoAssunto INT PRIMARY KEY,
 	DescricaoAssunto VARCHAR,
 	GrupoAssunto VARCHAR
 );
--- Tabela: Problema
+-- Table: Problema
 CREATE TABLE Problema (
 	CodigoProblema INT PRIMARY KEY,
 	DescricaoProblema VARCHAR,
