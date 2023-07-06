@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Seu Aplicativo</title>
+    <style>
+        .header {
+            background-color: #f2f2f2;
+            padding: 10px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .header a:before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: -10px;
+            width: 2px;
+            height: 80%;
+            background-color: #333;
+            transform: translateY(-50%);
+        }
+
+        .header a:first-child:before {
+            display: none;
+        }
+
+        .header a:hover {
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <a href="/">Página Inicial</a>
+        <a href="/tendencias">Tendências</a>
+    </div>
+</body>
+
+</html>
