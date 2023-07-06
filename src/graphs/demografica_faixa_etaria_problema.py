@@ -37,10 +37,15 @@ def obter_dados_principais_problemas_faixa_etaria():
     # Filtrar os dados apenas para os 5 problemas mais frequentes
     filtered_data = [row for row in data if row[0] in problemas_5]
 
+    # Ordenar as faixas etárias na ordem desejada
+    ordem_faixas_etarias = ['até 20 anos', 'entre 21 a 30 anos', 'entre 31 a 40 anos', 'entre 41 a 50 anos',
+                            'entre 51 a 60 anos', 'entre 61 a 70 anos', 'mais de 70 anos', 'Nao Informada', 'Nao se aplica']
+    faixas_etarias_sorted = sorted(faixas_etarias, key=lambda x: ordem_faixas_etarias.index(x))
+
     # Criar o gráfico de barras
     fig = go.Figure()
 
-    for faixa_etaria in faixas_etarias:
+    for faixa_etaria in faixas_etarias_sorted:
         faixa_etaria_contagem = [row[2] for row in filtered_data if row[1] == faixa_etaria]
         texto = [f'Faixa Etária: {faixa_etaria}' for _ in range(len(problemas_5))]
         fig.add_trace(go.Bar(x=problemas_5, y=faixa_etaria_contagem, name=faixa_etaria, hovertext=texto))
