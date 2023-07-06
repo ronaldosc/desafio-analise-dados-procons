@@ -4,6 +4,7 @@ import itertools
 
 from database.database_config import create_connection
 from psycopg2 import Error
+from tqdm import tqdm
 from transform import transform
 
 
@@ -14,6 +15,9 @@ def insert_data_from_dataframe(df):
 
         # Iniciar a transação
         conn.autocommit = False
+
+        total_rows = len(df)
+        progress_bar = tqdm(total=total_rows)
 
         for index, row in df.iterrows():
             # Inserção na tabela Regiao
@@ -27,21 +31,21 @@ def insert_data_from_dataframe(df):
             cursor.execute("""
                 INSERT INTO TipoAtendimento (CodigoTipoAtendimento, DescricaoTipoAtendimento)
                 VALUES (%s, %s)
-                ON CONFLICT (CodigoTipoAtendimento, DescricaoTipoAtendimento) DO NOTHING
+                ON CONFLICT (CodigoTipoAtendimento) DO NOTHING
             """, (row['CodigoTipoAtendimento'], row['DescricaoTipoAtendimento']))
 
             # Inserção na tabela Assunto
             cursor.execute("""
                 INSERT INTO Assunto (CodigoAssunto, DescricaoAssunto, GrupoAssunto)
                 VALUES (%s, %s, %s)
-                ON CONFLICT (CodigoAssunto, DescricaoAssunto, GrupoAssunto) DO NOTHING
+                ON CONFLICT (CodigoAssunto) DO NOTHING
             """, (row['CodigoAssunto'], row['DescricaoAssunto'], row['GrupoAssunto']))
 
             # Inserção na tabela Problema
             cursor.execute("""
                 INSERT INTO Problema (CodigoProblema, DescricaoProblema, GrupoProblema)
                 VALUES (%s, %s, %s)
-                ON CONFLICT (CodigoProblema, DescricaoProblema, GrupoProblema) DO NOTHING
+                ON CONFLICT (CodigoProblema) DO NOTHING
             """, (row['CodigoProblema'], row['DescricaoProblema'], row['GrupoProblema']))
 
             # Inserção na tabela Atendimento
@@ -53,6 +57,8 @@ def insert_data_from_dataframe(df):
             """, (row['AnoAtendimento'], row['TrimestreAtendimento'], row['MesAtendimento'], row['DataAtendimento'],
                   row['CodigoRegiao'], row['UF'], row['CodigoTipoAtendimento'], row['CodigoAssunto'],
                   row['CodigoProblema'], row['SexoConsumidor'], row['FaixaEtariaConsumidor'], row['CEPConsumidor']))
+
+            progress_bar.update(1)
 
         # Confirmar a transação
         conn.commit()
@@ -69,6 +75,7 @@ def insert_data_from_dataframe(df):
             conn.autocommit = True
             cursor.close()
             conn.close()
+            progress_bar.close()
             print('Conection closed.')
 
 
