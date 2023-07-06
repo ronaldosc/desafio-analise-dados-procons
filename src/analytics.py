@@ -7,6 +7,7 @@ from database.database_config import create_connection
 from flask import Flask
 from flask import render_template
 from flask import request
+from graphs.geografica_regiao_distribuicao import obter_dados_distribuicao_regiao
 from graphs.temporal_sazonalidade import obter_dados_sazonalidade
 from graphs.temporal_tendencias import obter_dados_tendencias
 
@@ -35,23 +36,8 @@ def sazonalidade():
 
 @app.route('/mapa')
 def mapa():
-    # Consulta ao banco de dados para obter a distribuição dos atendimentos por região
-    cur = conn.cursor()
-    cur.execute('SELECT Regiao, COUNT(*) AS CountAtendimentos FROM Atendimento INNER JOIN Regiao ON Atendimento.CodigoRegiao = Regiao.CodigoRegiao GROUP BY Regiao ORDER BY Regiao')
-    data = cur.fetchall()
-    cur.close()
-
-    # Processar os dados
-    regioes = []
-    contagem = []
-    for row in data:
-        regioes.append(row[0])
-        contagem.append(row[1])
-
-    # Criar o gráfico de pizza
-    fig = go.Figure(data=go.Pie(labels=regioes, values=contagem))
-
-    return render_template('mapa.html', plot=fig.to_html())
+    plot = obter_dados_distribuicao_regiao()
+    return render_template('mapa.html', plot=plot)
 
 
 @app.route('/variacao-tempo')
