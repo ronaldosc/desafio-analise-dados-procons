@@ -1,0 +1,17 @@
+{% include 'header.html' %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Mapa</title>
+</head>
+
+<body>
+    <h1>Distribuição dos Atendimentos por Região ou UF</h1>
+    <div>
+        {{ plot | safe }}
+    </div>
+</body>
+
+</html>

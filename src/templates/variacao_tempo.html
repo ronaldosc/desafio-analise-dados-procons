@@ -1,0 +1,17 @@
+{% include 'header.html' %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Variação ao Longo do Tempo</title>
+</head>
+
+<body>
+    <h1>Variação dos Atendimentos por Região ou UF ao Longo do Tempo</h1>
+    <div>
+        {{ plot | safe }}
+    </div>
+</body>
+
+</html>
