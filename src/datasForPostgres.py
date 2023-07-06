@@ -16,41 +16,43 @@ def insert_data_from_dataframe(df):
         conn.autocommit = False
 
         for index, row in df.iterrows():
-            # Inserção na tabela ChamadosProcon
-            # cursor.execute("""
-            #     INSERT INTO "ChamadosProcon" ("dataAtendimento", "nomeRegiao", "ufRegiao", "descricaoAtendimento", "descricaoAssunto", "descricaoProblema", "sexo", "faixaEtaria", "cep")
-            #     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-            # """, (row['DataAtendimento'], row['Regiao'], row['UF'], row['DescricaoTipoAtendimento'], row['DescricaoAssunto'], row['DescricaoProblema'], row['SexoConsumidor'], row['FaixaEtariaConsumidor'], row['CEPConsumidor'],))
-
             # Inserção na tabela Regiao
             cursor.execute("""
-                INSERT INTO "Regiao" ("nomeRegiao", "ufRegiao")
+                INSERT INTO Regiao (CodigoRegiao, Regiao)
                 VALUES (%s, %s)
-            """, (row['Regiao'], row['UF'],))
+                ON CONFLICT (CodigoRegiao) DO NOTHING
+            """, (row['CodigoRegiao'], row['Regiao']))
 
             # Inserção na tabela TipoAtendimento
             cursor.execute("""
-                INSERT INTO "TipoAtendimento" ("descricaoAtendimento")
-                VALUES (%s)
-            """, (row['DescricaoTipoAtendimento'],))
+                INSERT INTO TipoAtendimento (CodigoTipoAtendimento, DescricaoTipoAtendimento)
+                VALUES (%s, %s)
+                ON CONFLICT (CodigoTipoAtendimento, DescricaoTipoAtendimento) DO NOTHING
+            """, (row['CodigoTipoAtendimento'], row['DescricaoTipoAtendimento']))
 
             # Inserção na tabela Assunto
             cursor.execute("""
-                INSERT INTO "Assunto" ("descricaoAssunto")
-                VALUES (%s)
-            """, (row['DescricaoAssunto'],))
+                INSERT INTO Assunto (CodigoAssunto, DescricaoAssunto, GrupoAssunto)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (CodigoAssunto, DescricaoAssunto, GrupoAssunto) DO NOTHING
+            """, (row['CodigoAssunto'], row['DescricaoAssunto'], row['GrupoAssunto']))
 
             # Inserção na tabela Problema
             cursor.execute("""
-                INSERT INTO "Problema" ("descricaoProblema")
-                VALUES (%s)
-            """, (row['DescricaoProblema'],))
+                INSERT INTO Problema (CodigoProblema, DescricaoProblema, GrupoProblema)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (CodigoProblema, DescricaoProblema, GrupoProblema) DO NOTHING
+            """, (row['CodigoProblema'], row['DescricaoProblema'], row['GrupoProblema']))
 
             # Inserção na tabela Atendimento
             cursor.execute("""
-                INSERT INTO "Atendimento" ("sexo", "faixaEtaria", "cep", "dataAtendimento")
-                VALUES (%s, %s, %s, %s)
-            """, (row['SexoConsumidor'], row['FaixaEtariaConsumidor'], row['CEPConsumidor'], row['DataAtendimento'],))
+                INSERT INTO Atendimento (AnoAtendimento, TrimestreAtendimento, MesAtendimento, DataAtendimento,
+                                        CodigoRegiao, UF, CodigoTipoAtendimento, CodigoAssunto, CodigoProblema,
+                                        SexoConsumidor, FaixaEtariaConsumidor, CEPConsumidor)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (row['AnoAtendimento'], row['TrimestreAtendimento'], row['MesAtendimento'], row['DataAtendimento'],
+                  row['CodigoRegiao'], row['UF'], row['CodigoTipoAtendimento'], row['CodigoAssunto'],
+                  row['CodigoProblema'], row['SexoConsumidor'], row['FaixaEtariaConsumidor'], row['CEPConsumidor']))
 
         # Confirmar a transação
         conn.commit()
@@ -59,20 +61,17 @@ def insert_data_from_dataframe(df):
         return True
 
     except (Exception, Error) as error:
-        # Reverter a transação em caso de erro
         conn.rollback()
-        print('Erro ao copiar os dados:', error)
+        print('Error while executing queries:', error)
 
     finally:
         if conn:
-            # Restaurar o autocommit para True
             conn.autocommit = True
             cursor.close()
             conn.close()
-            print('Conexão fechada.')
+            print('Conection closed.')
 
 
 for year, trimester in itertools.product(range(2), range(4)):
-    print(f'{2019+year}_{1+trimester}')
     df = transform(year_index=year, trimester_index=trimester + 1)
     insert_data_from_dataframe(df)
