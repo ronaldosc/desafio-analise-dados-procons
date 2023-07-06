@@ -8,6 +8,7 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from graphs.demografica_faixa_etaria_atendimento import obter_dados_distribuicao_faixa_etaria
+from graphs.demografica_faixa_etaria_problema import obter_dados_principais_problemas_faixa_etaria
 from graphs.demografica_genero_atendimento import obter_dados_distribuicao_genero
 from graphs.demografica_genero_problema import obter_dados_principais_problemas_genero
 from graphs.geografica_regiao_distribuicao import obter_dados_distribuicao_regiao
@@ -94,50 +95,8 @@ def principais_problemas_genero():
 
 @app.route('/principais-problemas-faixa-etaria')
 def principais_problemas_faixa_etaria():
-    # Consulta ao banco de dados para obter os principais problemas relatados por faixa etária
-    cur = conn.cursor()
-    cur.execute('SELECT Problema.DescricaoProblema, Atendimento.FaixaEtariaConsumidor, COUNT(*) AS CountProblemas FROM Atendimento INNER JOIN Problema ON Atendimento.CodigoProblema = Problema.CodigoProblema GROUP BY Problema.DescricaoProblema, Atendimento.FaixaEtariaConsumidor ORDER BY CountProblemas DESC')
-    data = cur.fetchall()
-    cur.close()
-
-    # Processar os dados
-    problemas = []
-    faixas_etarias = []
-    contagem = []
-    for row in data:
-        problema = row[0]
-        faixa_etaria = row[1]
-        count = row[2]
-
-        if problema not in problemas:
-            problemas.append(problema)
-        if faixa_etaria not in faixas_etarias:
-            faixas_etarias.append(faixa_etaria)
-
-        contagem.append(count)
-
-    # Ordenar os problemas por contagem decrescente
-    problemas_ordenados = [problema for _, problema in sorted(zip(contagem, problemas), reverse=True)]
-    problemas_5 = problemas_ordenados[:5]
-
-    # Filtrar os dados apenas para os 5 problemas mais frequentes
-    filtered_data = [row for row in data if row[0] in problemas_5]
-
-    # Criar o gráfico de barras
-    fig = go.Figure()
-
-    for faixa_etaria in faixas_etarias:
-        faixa_etaria_contagem = [row[2] for row in filtered_data if row[1] == faixa_etaria]
-        texto = [f'Faixa Etária: {faixa_etaria}' for _ in range(len(problemas_5))]
-        fig.add_trace(go.Bar(x=problemas_5, y=faixa_etaria_contagem, name=faixa_etaria, hovertext=texto))
-
-    fig.update_layout(
-        title='Principais Problemas Relatados por Faixa Etária',
-        xaxis=dict(title='Problema'),
-        yaxis=dict(title='Contagem')
-    )
-
-    return render_template('principais_problemas_faixa_etaria.html', plot=fig.to_html())
+    plot = obter_dados_principais_problemas_faixa_etaria()
+    return render_template('principais_problemas_faixa_etaria.html', plot=plot)
 
 
 if __name__ == '__main__':
