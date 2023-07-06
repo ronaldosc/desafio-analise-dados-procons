@@ -7,6 +7,7 @@ from database.database_config import create_connection
 from flask import Flask
 from flask import render_template
 from flask import request
+from graphs.temporal_sazonalidade import obter_dados_sazonalidade
 from graphs.temporal_tendencias import obter_dados_tendencias
 
 # Conectar ao banco de dados PostgreSQL
@@ -28,36 +29,8 @@ def tendencias():
 
 @app.route('/sazonalidade')
 def sazonalidade():
-    # Consulta ao banco de dados para obter os dados de sazonalidade
-    cur = conn.cursor()
-    cur.execute('SELECT AnoAtendimento, MesAtendimento, COUNT(*) AS CountAtendimentos FROM Atendimento GROUP BY AnoAtendimento, MesAtendimento ORDER BY AnoAtendimento, MesAtendimento')
-    data = cur.fetchall()
-    cur.close()
-
-    # Processar os dados
-    anos = []
-    meses = []
-    contagem = []
-    for row in data:
-        anos.append(row[0])
-        meses.append(row[1])
-        contagem.append(row[2])
-
-    # Criar o gráfico de retas com cores diferentes para cada ano
-    fig = go.Figure()
-    for ano in set(anos):
-        indices_ano = [i for i, x in enumerate(anos) if x == ano]
-        cor = f'rgb({random.randint(0, 255)},{random.randint(0, 255)},{random.randint(0, 255)})'
-        fig.add_trace(go.Scatter(x=[meses[i] for i in indices_ano], y=[contagem[i]
-                      for i in indices_ano], mode='lines', name=str(ano), line=dict(color=cor)))
-
-    fig.update_layout(
-        title='Sazonalidade de Atendimentos',
-        xaxis=dict(title='Mês'),
-        yaxis=dict(title='Contagem')
-    )
-
-    return render_template('sazonalidade.html', plot=fig.to_html())
+    plot = obter_dados_sazonalidade()
+    return render_template('sazonalidade.html', plot=plot)
 
 
 @app.route('/mapa')
