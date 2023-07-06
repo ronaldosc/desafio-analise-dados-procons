@@ -27,13 +27,16 @@ def obter_dados_tendencias():
         meses.append(row[2])
         contagem.append(row[3])
 
+    # Definir as cores para cada ano
+    cores = ['rgb(239, 85, 59)', 'rgb(99, 110, 250)']  # Cores especificadas
+
     # Criar o gráfico de barras verticais com cores diferentes para cada ano
     fig = go.Figure()
-    for ano in set(anos):
-        indices_ano = [i for i, x in enumerate(anos) if x == ano]
-        cor = f'rgb({random.randint(0, 255)},{random.randint(0, 255)},{random.randint(0, 255)})'
-        fig.add_trace(go.Bar(x=[meses[i] for i in indices_ano], y=[contagem[i]
-                      for i in indices_ano], name=str(ano), marker=dict(color=cor)))
+    for i, ano in enumerate(set(anos)):
+        indices_ano = [j for j, x in enumerate(anos) if x == ano]
+        cor = cores[i % len(cores)]
+        fig.add_trace(go.Bar(x=[meses[j] for j in indices_ano], y=[contagem[j]
+                      for j in indices_ano], name=str(ano), marker=dict(color=cor)))
 
     fig.update_layout(
         title='Tendências de Atendimentos',

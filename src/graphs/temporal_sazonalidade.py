@@ -25,11 +25,14 @@ def obter_dados_sazonalidade():
         meses.append(row[1])
         contagem.append(row[2])
 
+    # Definir as cores para cada ano
+    cores = ['rgb(239, 85, 59)', 'rgb(99, 110, 250)']
+
     # Criar o gráfico de retas com cores diferentes para cada ano
     fig = go.Figure()
-    for ano in set(anos):
+    for i, ano in enumerate(set(anos)):
         indices_ano = [i for i, x in enumerate(anos) if x == ano]
-        cor = f'rgb({random.randint(0, 255)},{random.randint(0, 255)},{random.randint(0, 255)})'
+        cor = cores[i % len(cores)]
         fig.add_trace(go.Scatter(x=[meses[i] for i in indices_ano], y=[contagem[i]
                       for i in indices_ano], mode='lines', name=str(ano), line=dict(color=cor)))
 
