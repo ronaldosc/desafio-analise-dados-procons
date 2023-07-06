@@ -25,10 +25,14 @@ class CSVReader:
             with contextlib.suppress(UnicodeDecodeError, KeyError, pd.errors.ParserError):
                 df = pd.read_csv(csv_file, encoding=encoding, sep=separator)
                 df = df.fillna(0)
+
                 for column, (data_type, slice_size) in self.value_dictionary.items():
                     if slice_size is not None:
                         df[column] = df[column].astype(str).str.slice(0, slice_size)
                     df[column] = df[column].astype(data_type)
+
+                df = self.trim_all_columns(df)
+
                 return df
         raise ValueError('Failed to read CSV file with all encodings and separators')
 
@@ -38,14 +42,14 @@ class CSVReader:
         df[column_name] = df[column_name].str[:-3] + '-' + df[column_name].str[-3:]
         return df
 
-    def sort_data_columns(self, df: pd.DataFrame) -> pd.DataFrame:
-        return df.apply(lambda x: x.sort_values().reset_index(drop=True))
+    def trim_all_columns(self, df: pd.DataFrame) -> pd.DataFrame:
+        df = df.apply(lambda x: x.str.strip() if x.dtype == 'object' else x)
+        return df
 
 
 def transform(year_index: int = 0, trimester_index: int = 1) -> pd.DataFrame:
     csv_reader = CSVReader(dataset_folder_name, dataset_years, dataset_value_dictionary)
     df = csv_reader.read_csv(year_index, trimester_index)
     df = csv_reader.clean_cep_column(df)
-    df = csv_reader.sort_data_columns(df)
 
     return df

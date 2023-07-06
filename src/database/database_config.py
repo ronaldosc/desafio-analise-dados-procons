@@ -57,3 +57,7 @@ def execute_schema_queries():
             cursor.close()
             conn.close()
             print('Conection closed.')
+
+
+if __name__ == '__main__':
+    execute_schema_queries()

@@ -1,57 +1,47 @@
-CREATE TABLE "Regiao" (
-	"idRegiao" serial PRIMARY KEY,
-	"nomeRegiao" varchar NOT NULL,
-	"ufRegiao" varchar NOT NULL
-) WITH (
-  OIDS=FALSE
+-- Table: Atendimento
+CREATE TABLE Atendimento (
+	IDAtendimento SERIAL PRIMARY KEY,
+	AnoAtendimento INT,
+	TrimestreAtendimento INT,
+	MesAtendimento INT,
+	DataAtendimento DATE,
+	CodigoRegiao VARCHAR(2),
+	UF VARCHAR(2),
+	CodigoTipoAtendimento INT,
+	CodigoAssunto INT,
+	CodigoProblema INT,
+	SexoConsumidor CHAR(1),
+	FaixaEtariaConsumidor VARCHAR,
+	CEPConsumidor VARCHAR
 );
-
-
-
-CREATE TABLE "TipoAtendimento" (
-	"idTipoAtendimento" serial PRIMARY KEY,
-	"descricaoAtendimento" varchar NOT NULL
-) WITH (
-  OIDS=FALSE
+-- Table: Regiao
+CREATE TABLE Regiao (
+	CodigoRegiao VARCHAR(2) PRIMARY KEY,
+	Regiao VARCHAR(15)
 );
-
-
-
-CREATE TABLE "Assunto" (
-	"idAssunto" serial PRIMARY KEY,
-	"descricaoAssunto" varchar NOT NULL
-) WITH (
-  OIDS=FALSE
+-- Table: TipoAtendimento
+CREATE TABLE TipoAtendimento (
+	CodigoTipoAtendimento INT PRIMARY KEY,
+	DescricaoTipoAtendimento VARCHAR
 );
-
-
-
-CREATE TABLE "Problema" (
-	"idProblema" serial PRIMARY KEY,
-	"descricaoProblema" varchar NOT NULL
-) WITH (
-  OIDS=FALSE
+-- Table: Assunto
+CREATE TABLE Assunto (
+	CodigoAssunto INT PRIMARY KEY,
+	DescricaoAssunto VARCHAR,
+	GrupoAssunto VARCHAR
 );
-
-
-
-CREATE TABLE "Atendimento" (
-	"idAtendimento" serial PRIMARY KEY,
-	"sexo" varchar(1) NOT NULL,
-	"faixaEtaria" varchar NOT NULL,
-	"cep" varchar NOT NULL,
-	"dataAtendimento" DATE NOT NULL,
-	"idRegiao" serial NOT NULL,
-	"idTipoAtendimento" serial NOT NULL,
-	"idAssunto" serial NOT NULL,
-	"idProblema" serial NOT NULL
-) WITH (
-  OIDS=FALSE
+-- Table: Problema
+CREATE TABLE Problema (
+	CodigoProblema INT PRIMARY KEY,
+	DescricaoProblema VARCHAR,
+	GrupoProblema VARCHAR
 );
-
-
-
-ALTER TABLE "Atendimento" ADD CONSTRAINT "Atendimento_fk0" FOREIGN KEY ("idRegiao") REFERENCES "Regiao"("idRegiao");
-ALTER TABLE "Atendimento" ADD CONSTRAINT "Atendimento_fk1" FOREIGN KEY ("idTipoAtendimento") REFERENCES "TipoAtendimento"("idTipoAtendimento");
-ALTER TABLE "Atendimento" ADD CONSTRAINT "Atendimento_fk2" FOREIGN KEY ("idAssunto") REFERENCES "Assunto"("idAssunto");
-ALTER TABLE "Atendimento" ADD CONSTRAINT "Atendimento_fk3" FOREIGN KEY ("idProblema") REFERENCES "Problema"("idProblema");
+-- Alter table: Atendimento
+ALTER TABLE Atendimento
+ADD CONSTRAINT fk_Atendimento_Regiao FOREIGN KEY (CodigoRegiao) REFERENCES Regiao(CodigoRegiao);
+ALTER TABLE Atendimento
+ADD CONSTRAINT fk_Atendimento_TipoAtendimento FOREIGN KEY (CodigoTipoAtendimento) REFERENCES TipoAtendimento(CodigoTipoAtendimento);
+ALTER TABLE Atendimento
+ADD CONSTRAINT fk_Atendimento_Assunto FOREIGN KEY (CodigoAssunto) REFERENCES Assunto(CodigoAssunto);
+ALTER TABLE Atendimento
+ADD CONSTRAINT fk_Atendimento_Problema FOREIGN KEY (CodigoProblema) REFERENCES Problema(CodigoProblema);

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Seu Aplicativo</title>
+    <style>
+        .header {
+            background-color: #f2f2f2;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .header h2 {
+            margin: 10px 0;
+        }
+
+        .header-category {
+            margin-bottom: 20px;
+        }
+
+        .header a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .header a:before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: -10px;
+            width: 2px;
+            height: 80%;
+            background-color: #333;
+            transform: translateY(-50%);
+        }
+
+        .header a:first-child:before {
+            display: none;
+        }
+
+        .header a:hover {
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <a href="/">Inicio</a>
+        <div class="header-category">
+            <h2>Temporal</h2>
+            <a href="/temporal_tendencias">Tendências</a>
+            <a href="/temporal_sazonalidade">Sazonalidade</a>
+        </div>
+
+        <div class="header-category">
+            <h2>Geográfica</h2>
+            <a href="/geografica_regiao_distribuicao">Mapa</a>
+            <a href="/geografica_regiao_variacao">Variação ao Longo do Tempo</a>
+        </div>
+
+        <div class="header-category">
+            <h2>Reclamação</h2>
+            <a href="/reclamacao_assuntos">Assuntos Recorrentes</a>
+            <a href="/reclamacao_problema_comum">Problemas Comuns</a>
+            <a href="/reclamacao_problema_regiao">Destaques por Região ou UF</a>
+        </div>
+
+        <div class="header-category">
+            <h2>Demográfica</h2>
+            <a href="/demografica_genero_atendimento">Distribuição dos Atendimentos por Gênero</a>
+            <a href="/demografica_faixa_etaria_atendimento">Distribuição dos Atendimentos por Faixa Etária</a>
+            <a href="/demografica_genero_problema">Principais Problemas por Gênero</a>
+            <a href="/demografica_faixa_etaria_problema">Principais Problemas por Faixa Etária</a>
+        </div>
+    </div>
+</body>
+
+</html>
