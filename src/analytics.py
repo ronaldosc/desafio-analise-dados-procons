@@ -30,73 +30,73 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/tendencias')
-def tendencias():
+@app.route('/temporal_tendencias')
+def temporal_tendencias():
     plot = obter_dados_tendencias()
-    return render_template('tendencias.html', plot=plot)
+    return render_template('temporal_tendencias.html', plot=plot)
 
 
-@app.route('/sazonalidade')
-def sazonalidade():
+@app.route('/temporal_sazonalidade')
+def temporal_sazonalidade():
     plot = obter_dados_sazonalidade()
-    return render_template('sazonalidade.html', plot=plot)
+    return render_template('temporal_sazonalidade.html', plot=plot)
 
 
-@app.route('/mapa')
-def mapa():
+@app.route('/geografica_regiao_distribuicao')
+def geografica_regiao_distribuicao():
     plot = obter_dados_distribuicao_regiao()
-    return render_template('mapa.html', plot=plot)
+    return render_template('geografica_regiao_distribuicao.html', plot=plot)
 
 
-@app.route('/variacao-tempo')
-def variacao_tempo():
+@app.route('/geografica_regiao_variacao')
+def geografica_regiao_variacao():
     plot = obter_dados_variacao_tempo()
-    return render_template('variacao_tempo.html', plot=plot)
+    return render_template('geografica_regiao_variacao.html', plot=plot)
 
 
-@app.route('/assuntos-recorrentes')
-def assuntos_recorrentes():
+@app.route('/reclamacao_assuntos')
+def reclamacao_assuntos():
     ano_selecionado = request.args.get('ano')
     plot = obter_dados_assuntos_recorrentes(ano_selecionado)
-    return render_template('assuntos_recorrentes.html', plot=plot)
+    return render_template('reclamacao_assuntos.html', plot=plot)
 
 
-@app.route('/problemas-comuns')
-def problemas_comuns():
+@app.route('/reclamacao_problema_comum')
+def reclamacao_problema_comum():
     ano_selecionado = request.args.get('ano')
     plot = obter_dados_problemas_comuns(ano_selecionado)
-    return render_template('problemas_comuns.html', plot=plot)
+    return render_template('reclamacao_problema_comum.html', plot=plot)
 
 
-@app.route('/destaques-regiao-uf')
-def destaques_regiao_uf():
+@app.route('/reclamacao_problema_regiao')
+def reclamacao_problema_regiao():
     uf_regiao = request.args.get('uf_regiao')
     plot = obter_dados_destaques_regiao_uf(uf_regiao)
-    return render_template('destaques_regiao_uf.html', plot=plot)
+    return render_template('reclamacao_problema_regiao.html', plot=plot)
 
 
-@app.route('/distribuicao-genero')
-def distribuicao_sexo():
+@app.route('/demografica_genero_atendimento')
+def demografica_genero_atendimento():
     plot = obter_dados_distribuicao_genero()
-    return render_template('distribuicao_genero.html', plot=plot)
+    return render_template('demografica_genero_atendimento.html', plot=plot)
 
 
-@app.route('/distribuicao-faixa-etaria')
-def distribuicao_faixa_etaria():
+@app.route('/demografica_faixa_etaria_atendimento')
+def demografica_faixa_etaria_atendimento():
     plot = obter_dados_distribuicao_faixa_etaria()
-    return render_template('distribuicao_faixa_etaria.html', plot=plot)
+    return render_template('demografica_faixa_etaria_atendimento.html', plot=plot)
 
 
-@app.route('/principais-problemas-genero')
-def principais_problemas_genero():
+@app.route('/demografica_genero_problema')
+def demografica_genero_problema():
     plot = obter_dados_principais_problemas_genero()
-    return render_template('principais_problemas_genero.html', plot=plot)
+    return render_template('demografica_genero_problema.html', plot=plot)
 
 
-@app.route('/principais-problemas-faixa-etaria')
-def principais_problemas_faixa_etaria():
+@app.route('/demografica_faixa_etaria_problema')
+def demografica_faixa_etaria_problema():
     plot = obter_dados_principais_problemas_faixa_etaria()
-    return render_template('principais_problemas_faixa_etaria.html', plot=plot)
+    return render_template('demografica_faixa_etaria_problema.html', plot=plot)
 
 
 if __name__ == '__main__':
