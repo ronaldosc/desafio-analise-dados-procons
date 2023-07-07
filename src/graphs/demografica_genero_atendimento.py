@@ -25,7 +25,7 @@ def obter_dados_distribuicao_genero():
     fig = go.Figure(data=go.Pie(labels=sexos, values=contagem))
 
     fig.update_layout(
-        title='Distribuição dos Atendimentos por Sexo do Consumidor',
+        title='Distribuição dos Atendimentos por Gênero do Consumidor',
     )
 
     return fig.to_html()
