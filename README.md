@@ -1,35 +1,35 @@
-# Desafio Python: Engenharia e Ánalise de Dados de Procons no Brasil
+# Python Challenge: Engineering and Data Analysis of Procons in Brazil
 
-## Objetivos
+## Objectives
 
-  >Realizar os processos de:
+  >To carry out the processes of:
   >
-  >- ‘coleta’,
-  >- ‘limpeza’,
-  >- ‘análise’ e,
-  >- ‘visualização’
+  >- 'collection',
+  >- 'cleaning',
+  >- 'analysis' and,
+  >- 'visualization'
   >
-  > de dados provenientes da **Administração Pública Brasileira**.
+  > of data from the **Brazilian Public Administration**.
 
-### [Fonte dos Dados para este Projeto](https://dados.mj.gov.br/dataset/atendimentos-de-consumidores-nos-procons-sindec)
+### [Data Source for this Project](https://dados.mj.gov.br/dataset/atendimentos-de-consumidores-nos-procons-sindec)
 
-## Instruções
+## Instructions
 
-- Uso das informações coletadas de um site da administração pública;
-- Uso da biblioteca ‘Pandas’;
-- Tratamento dos dados para remover aqueles não relevantes para o fim da aplicação (‘limpeza’);
+- Use of information collected from a public administration website;
+- Use of the 'Pandas' library;
+- Data processing to remove data that is not relevant to the purpose of the application ('cleaning');
 
-- Uso de banco de dados relacional:
-  - Uso do Postgres.
-  - Mínimo de 5 tabelas.
-  - As tabelas principais devem ter no mínimo 10 mil registros cada.
-  - Utilizar comandos SQL para o cruzamento das informações.
+- Use of a relational database:
+  - Use of Postgres.
+  - Minimum of 5 tables.
+  - The main tables must have at least 10,000 records each.
+  - Use SQL commands to cross-reference information.
 
-- Implementar e detalhar um processamento segmentado em no mínimo 3 zonas:
-  - raw (dado cru).
-  - curated (dado limpo).
-  - analytics (dado analisado).
+- Implement and detail segmented processing in at least 3 zones:
+  - raw (raw data).
+  - curated (clean data).
+  - analytics (analyzed data).
 
-- Visualização dos dados analisados;
+- Visualization of analyzed data;
 
-- Uso da análise _estatística básica_ nos dados.
+- Use of basic statistical analysis on the data.
