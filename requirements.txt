@@ -110,7 +110,7 @@ pytz==2023.3
     # via pandas
 pyyaml==6.0
     # via pre-commit
-requests==2.31.0
+requests==2.32.2
     # via -r requirements.in
 seaborn==0.12.2
     # via -r requirements.in
