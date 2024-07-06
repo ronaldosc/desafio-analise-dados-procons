@@ -7,6 +7,7 @@ on:
       - main # The 'main' branch
       #- master # The 'master' branch
       #- 'releases/*' # The release branches
+      - dependabot/** # Check temp security patch branches
 
 jobs:
   qodana:
