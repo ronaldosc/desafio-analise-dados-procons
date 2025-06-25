@@ -126,7 +126,7 @@ typing==3.7.4.3
     # via -r requirements.in
 tzdata==2023.3
     # via pandas
-urllib3==2.2.2
+urllib3==2.5.0
     # via requests
 virtualenv==20.26.6
     # via
