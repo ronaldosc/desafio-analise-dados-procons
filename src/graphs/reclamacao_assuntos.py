@@ -11,11 +11,16 @@ def obter_dados_assuntos_recorrentes(ano_selecionado=None):
     # Consulta ao banco de dados para obter os assuntos mais recorrentes nas reclamações
     cur = conn.cursor()
     query = 'SELECT Assunto.DescricaoAssunto, COUNT(*) AS CountReclamacoes FROM Atendimento INNER JOIN Assunto ON Atendimento.CodigoAssunto = Assunto.CodigoAssunto'
+    params = []
     if ano_selecionado:
-        query += f' WHERE EXTRACT(YEAR FROM Atendimento.DataAtendimento) = {ano_selecionado}'
+        query += ' WHERE EXTRACT(YEAR FROM Atendimento.DataAtendimento) = %s'
+        params.append(ano_selecionado)
     query += ' GROUP BY Assunto.DescricaoAssunto ORDER BY CountReclamacoes DESC LIMIT 5'
 
-    cur.execute(query)
+    if params:
+        cur.execute(query, params)
+    else:
+        cur.execute(query)
     data = cur.fetchall()
     cur.close()
 
