@@ -11,11 +11,13 @@ def obter_dados_problemas_comuns(ano_selecionado=None):
     # Consulta ao banco de dados para obter os problemas mais comuns relatados pelos consumidores
     cur = conn.cursor()
     query = 'SELECT Problema.DescricaoProblema, COUNT(*) AS CountProblemas FROM Atendimento INNER JOIN Problema ON Atendimento.CodigoProblema = Problema.CodigoProblema'
+    params = ()
     if ano_selecionado:
-        query += f' WHERE EXTRACT(YEAR FROM Atendimento.DataAtendimento) = {ano_selecionado}'
+        query += ' WHERE EXTRACT(YEAR FROM Atendimento.DataAtendimento) = %s'
+        params = (ano_selecionado,)
     query += ' GROUP BY Problema.DescricaoProblema ORDER BY CountProblemas DESC LIMIT 5'
 
-    cur.execute(query)
+    cur.execute(query, params)
     data = cur.fetchall()
     cur.close()
 
