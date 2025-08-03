@@ -11,11 +11,13 @@ def obter_dados_destaques_regiao_uf(uf_regiao=None):
     # Consulta ao banco de dados para verificar os assuntos e problemas que se destacam em determinadas regiões ou UF
     cur = conn.cursor()
     query = 'SELECT Regiao, UF, Assunto.DescricaoAssunto, Problema.DescricaoProblema, COUNT(*) AS Contagem FROM Atendimento INNER JOIN Regiao ON Atendimento.CodigoRegiao = Regiao.CodigoRegiao INNER JOIN Assunto ON Atendimento.CodigoAssunto = Assunto.CodigoAssunto INNER JOIN Problema ON Atendimento.CodigoProblema = Problema.CodigoProblema'
+    params = ()
     if uf_regiao:
-        query += f" WHERE Regiao = '{uf_regiao}' OR UF = '{uf_regiao}'"
+        query += " WHERE Regiao = %s OR UF = %s"
+        params = (uf_regiao, uf_regiao)
     query += ' GROUP BY Regiao, UF, Assunto.DescricaoAssunto, Problema.DescricaoProblema ORDER BY Contagem DESC'
 
-    cur.execute(query)
+    cur.execute(query, params)
     data = cur.fetchall()
     cur.close()
 
