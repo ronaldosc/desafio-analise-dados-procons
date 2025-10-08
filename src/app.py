@@ -97,4 +97,4 @@ def demografica_faixa_etaria_problema():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
