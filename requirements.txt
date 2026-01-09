@@ -132,7 +132,7 @@ virtualenv==20.26.6
     # via
     #   -r requirements.in
     #   pre-commit
-werkzeug==3.1.4
+werkzeug==3.1.5
     # via flask
 wheel==0.40.0
     # via pip-tools
