@@ -69,11 +69,12 @@ numpy==1.25.0
     #   seaborn
 openpyxl==3.1.2
     # via -r requirements.in
-packaging==23.1
+packaging==26.0
     # via
     #   build
     #   matplotlib
     #   plotly
+    #   wheel
 pandas==2.0.3
     # via
     #   -r requirements.in
@@ -134,7 +135,7 @@ virtualenv==20.26.6
     #   pre-commit
 werkzeug==3.1.5
     # via flask
-wheel==0.40.0
+wheel==0.46.2
     # via pip-tools
 
 # The following packages are considered to be unsafe in a requirements file:
