@@ -30,7 +30,7 @@ distlib==0.3.9
     # via virtualenv
 et-xmlfile==1.1.0
     # via openpyxl
-filelock==3.20.1
+filelock==3.20.3
     # via virtualenv
 flake8==6.0.0
     # via -r requirements.in
