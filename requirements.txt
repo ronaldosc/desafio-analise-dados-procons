@@ -123,7 +123,7 @@ seaborn==0.12.2
     # via -r requirements.in
 six==1.16.0
     # via python-dateutil
-soupsieve==2.9
+soupsieve==4.0
     # via beautifulsoup4
 tenacity==8.2.2
     # via plotly
